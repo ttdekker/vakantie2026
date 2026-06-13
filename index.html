@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Pays Secret — gezinszomer Elzas 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --paper:#EEF1EC;       /* pale ciel-mist, niet de cream-default */
+    --ink:#1C2B2A;         /* diep dennen-inkt */
+    --muted:#5B6B66;
+    --line:#D4DAD2;
+    --card:#FBFCFA;
+    /* categorie-accenten, geworteld in het gebied */
+    --natuur:#3E7A4E;      /* bos / vergers */
+    --dieren:#D98E2B;      /* honing / ooievaar */
+    --water:#2C6E8F;       /* canal de la Sarre */
+    --erfgoed:#6E3B55;     /* Romeins / pruim */
+    --feest:#B85C4A;       /* grès rose des Vosges */
+    --actief:#2E7D74;      /* rail / beweging */
+    --shadow:0 1px 0 rgba(28,43,42,.06), 0 8px 24px -16px rgba(28,43,42,.5);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;background:var(--paper);color:var(--ink);
+    font-family:"Inter",system-ui,sans-serif;line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1100px;margin:0 auto;padding:0 20px}
+
+  /* ---------- Hero ---------- */
+  header.hero{padding:42px 0 26px;border-bottom:1px solid var(--line)}
+  .hero-top{display:flex;align-items:flex-start;gap:18px;justify-content:space-between;flex-wrap:wrap}
+  .eyebrow{font-family:"Space Mono",monospace;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--feest);margin:0 0 6px}
+  h1{font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:clamp(34px,6vw,60px);line-height:.96;margin:0;letter-spacing:-.02em}
+  h1 .sub{display:block;font-weight:500;font-size:clamp(15px,2.4vw,20px);color:var(--muted);letter-spacing:0;margin-top:10px}
+  .stork{flex:0 0 auto;width:84px;height:84px;color:var(--erfgoed)}
+  .meta{margin-top:18px;display:flex;gap:10px 22px;flex-wrap:wrap;font-family:"Space Mono",monospace;font-size:12.5px;color:var(--muted)}
+  .meta b{color:var(--ink);font-weight:700}
+
+  /* ---------- Telbalk ---------- */
+  .counts{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+  .count{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 13px;display:flex;align-items:center;gap:8px;font-size:13px;box-shadow:var(--shadow)}
+  .count .n{font-family:"Bricolage Grotesque";font-weight:800;font-size:18px;line-height:1}
+  .count.shortlist .n{color:var(--feest)}
+  .count.geboekt .n{color:var(--natuur)}
+
+  /* ---------- Filterbalk ---------- */
+  .controls{position:sticky;top:0;z-index:20;background:rgba(238,241,236,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:14px 0}
+  .controls .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .controls .row + .row{margin-top:10px}
+  .search{flex:1 1 220px;min-width:0}
+  input[type=search],select{font:inherit;font-size:14px;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:9px 12px;width:100%}
+  select{width:auto;cursor:pointer}
+  .label{font-family:"Space Mono",monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-right:2px}
+  .chips{display:flex;gap:7px;flex-wrap:wrap}
+  .chip{font:inherit;font-size:13px;cursor:pointer;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:6px 12px;color:var(--ink);display:inline-flex;align-items:center;gap:6px;transition:.12s}
+  .chip:hover{border-color:var(--ink)}
+  .chip[aria-pressed=true]{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .chip .dot{width:9px;height:9px;border-radius:999px;flex:0 0 auto}
+  .toggle{display:inline-flex;align-items:center;gap:8px;font-size:13.5px;cursor:pointer;user-select:none}
+  .toggle input{appearance:none;width:38px;height:22px;border-radius:999px;background:var(--line);position:relative;cursor:pointer;transition:.15s;flex:0 0 auto}
+  .toggle input:checked{background:var(--natuur)}
+  .toggle input::after{content:"";position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;transition:.15s}
+  .toggle input:checked::after{left:18px}
+  .btn{font:inherit;font-size:14px;font-weight:600;cursor:pointer;border-radius:10px;padding:9px 14px;border:1px solid var(--ink);background:var(--ink);color:#fff}
+  .btn.ghost{background:transparent;color:var(--ink)}
+  .btn:hover{opacity:.9}
+
+  /* ---------- Grid + kaarten ---------- */
+  main{padding:24px 0 60px}
+  .resultline{font-family:"Space Mono",monospace;font-size:12px;color:var(--muted);margin:2px 0 16px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:16px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;box-shadow:var(--shadow);position:relative;transition:.12s}
+  .card:hover{transform:translateY(-2px)}
+  .card.is-nee{opacity:.5}
+  .card.is-shortlist{border-color:var(--feest);box-shadow:0 0 0 1px var(--feest),var(--shadow)}
+  .card.is-geboekt{border-color:var(--natuur);box-shadow:0 0 0 1px var(--natuur),var(--shadow)}
+  .thumb{height:104px;position:relative;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--cat) 0%, color-mix(in srgb,var(--cat) 70%, #000 6%) 100%)}
+  .thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .thumb .emoji{font-size:40px;filter:drop-shadow(0 2px 6px rgba(0,0,0,.25))}
+  /* afstand-stempel: het signature-element */
+  .stamp{position:absolute;top:10px;right:10px;background:var(--paper);color:var(--ink);border:1px dashed rgba(28,43,42,.45);border-radius:8px;padding:4px 8px;font-family:"Space Mono",monospace;font-size:12px;font-weight:700;letter-spacing:.02em}
+  .when{position:absolute;left:10px;bottom:10px;background:rgba(0,0,0,.55);color:#fff;border-radius:7px;padding:3px 8px;font-family:"Space Mono",monospace;font-size:11px}
+  .body{padding:13px 15px 15px;display:flex;flex-direction:column;gap:8px;flex:1}
+  .cat{font-family:"Space Mono",monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--cat);font-weight:700}
+  .card h3{font-family:"Bricolage Grotesque";font-weight:700;font-size:19px;line-height:1.1;margin:0;letter-spacing:-.01em}
+  .where{font-size:12.5px;color:var(--muted)}
+  .what{font-size:13.5px;color:#33433f;margin:0}
+  .tagrow{display:flex;gap:6px;flex-wrap:wrap;margin-top:1px}
+  .tag{font-size:11px;border:1px solid var(--line);border-radius:6px;padding:2px 7px;color:var(--muted);background:var(--paper)}
+  .tag.peuter{color:var(--dieren);border-color:color-mix(in srgb,var(--dieren) 40%,var(--line))}
+  .tag.res{color:var(--feest);border-color:color-mix(in srgb,var(--feest) 40%,var(--line))}
+  .rate{font-family:"Space Mono",monospace;font-size:12px;color:var(--muted)}
+  .rate b{color:var(--ink)}
+  .links{display:flex;gap:14px;margin-top:2px}
+  .links a{font-size:13px;font-weight:600;color:var(--water);text-decoration:none}
+  .links a:hover{text-decoration:underline}
+  .foot{margin-top:auto;padding-top:12px;border-top:1px solid var(--line);display:flex;gap:6px;flex-wrap:wrap}
+  .sbtn{font:inherit;font-size:12px;cursor:pointer;border:1px solid var(--line);background:var(--paper);border-radius:8px;padding:5px 9px;color:var(--muted);flex:1;min-width:62px;transition:.1s}
+  .sbtn:hover{border-color:var(--ink);color:var(--ink)}
+  .sbtn[aria-pressed=true]{color:#fff;border-color:transparent}
+  .sbtn.s-shortlist[aria-pressed=true]{background:var(--feest)}
+  .sbtn.s-geboekt[aria-pressed=true]{background:var(--natuur)}
+  .sbtn.s-nee[aria-pressed=true]{background:var(--muted)}
+
+  .empty{text-align:center;color:var(--muted);padding:50px 20px;font-size:15px}
+
+  /* ---------- Eigen-plan formulier ---------- */
+  dialog{border:none;border-radius:18px;padding:0;max-width:480px;width:92%;box-shadow:0 30px 70px -20px rgba(28,43,42,.6)}
+  dialog::backdrop{background:rgba(28,43,42,.4)}
+  .dlg{padding:22px 24px 24px}
+  .dlg h2{font-family:"Bricolage Grotesque";font-weight:800;margin:0 0 4px;font-size:24px}
+  .dlg p.note{margin:0 0 16px;color:var(--muted);font-size:13px}
+  .field{margin-bottom:12px}
+  .field label{display:block;font-size:12px;font-weight:600;margin-bottom:4px}
+  .field input,.field select,.field textarea{width:100%;font:inherit;font-size:14px;border:1px solid var(--line);border-radius:9px;padding:9px 11px;background:#fff}
+  .field textarea{resize:vertical;min-height:54px}
+  .two{display:flex;gap:10px}.two>*{flex:1}
+  .dlg-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:6px}
+
+  footer{border-top:1px solid var(--line);padding:26px 0 60px;color:var(--muted);font-size:13px}
+  footer h4{font-family:"Bricolage Grotesque";color:var(--ink);font-size:15px;margin:0 0 6px}
+  footer a{color:var(--water)}
+  footer .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:22px}
+  code{font-family:"Space Mono",monospace;font-size:12px;background:var(--card);border:1px solid var(--line);border-radius:5px;padding:1px 5px}
+
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="hero-top">
+      <div>
+        <p class="eyebrow">Pays Secret · Alsace Bossue + Vosges du Nord</p>
+        <h1>Wat doen we deze zomer?
+          <span class="sub">Gezinsbrainstorm — 18 t/m 31 juli 2026 · vanuit 27 Rue Lot. Waldmatt, Schœnbourg</span>
+        </h1>
+      </div>
+      <!-- ooievaar: kleine signature -->
+      <svg class="stork" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M22 78c10 4 24 4 33-3"/>
+        <path d="M55 72c14-2 24-12 24-26 0-9-6-16-15-16-7 0-12 5-12 12"/>
+        <path d="M52 42l-9-6"/>
+        <path d="M43 36l16-2 14 7"/>
+        <circle cx="62" cy="30" r="1.6" fill="currentColor" stroke="none"/>
+        <path d="M30 80l4-14M40 80l3-12"/>
+      </svg>
+    </div>
+
+    <div class="meta">
+      <span>👨‍👩‍👧 Kinderen <b>9</b> · <b>7</b> · <b>1½</b> + ouders</span>
+      <span>📍 Schœnbourg <b>67320</b></span>
+      <span>🗓️ <b>14 dagen</b></span>
+      <span>🚗 Afstanden bij benadering, per auto</span>
+    </div>
+
+    <div class="counts" id="counts"></div>
+  </div>
+</header>
+
+<div class="controls">
+  <div class="wrap">
+    <div class="row">
+      <div class="search"><input type="search" id="q" placeholder="Zoek (bv. ooievaar, Romeins, vélorail, zwemmen)…" aria-label="Zoeken" /></div>
+      <label class="toggle"><input type="checkbox" id="onlyTrip" checked /> Alleen tijdens ons verblijf</label>
+      <select id="sort" aria-label="Sorteren">
+        <option value="dist">Sorteer: dichtstbij</option>
+        <option value="date">Sorteer: op datum</option>
+        <option value="rating">Sorteer: best beoordeeld</option>
+      </select>
+      <select id="maxdist" aria-label="Max afstand">
+        <option value="999">Afstand: alles</option>
+        <option value="15">≤ 15 km</option>
+        <option value="25">≤ 25 km</option>
+        <option value="45">≤ 45 km</option>
+      </select>
+      <button class="btn" id="addBtn">＋ Eigen plan</button>
+    </div>
+    <div class="row">
+      <span class="label">Voor wie</span>
+      <div class="chips" id="audChips">
+        <button class="chip" data-aud="peuter" aria-pressed="false">👶 Peuter (1½)</button>
+        <button class="chip" data-aud="kids" aria-pressed="false">🧒 Kids 7 &amp; 9</button>
+        <button class="chip" data-aud="ouders" aria-pressed="false">🧑 Ouders</button>
+      </div>
+    </div>
+    <div class="row">
+      <span class="label">Soort</span>
+      <div class="chips" id="catChips"></div>
+      <span style="flex:1"></span>
+      <button class="chip" id="onlyPicked" aria-pressed="false">★ Alleen shortlist/geboekt</button>
+    </div>
+  </div>
+</div>
+
+<main class="wrap">
+  <div class="resultline" id="resultline"></div>
+  <div class="grid" id="grid"></div>
+  <div class="empty" id="empty" hidden>Niets gevonden met deze filters. Zet er eentje uit, of voeg een eigen plan toe.</div>
+</main>
+
+<dialog id="addDlg">
+  <form method="dialog" class="dlg" id="addForm">
+    <h2>Eigen plan toevoegen</h2>
+    <p class="note">Komt bovenaan je lijst te staan en wordt lokaal bewaard in deze browser.</p>
+    <div class="field"><label>Naam *</label><input name="title" required placeholder="bv. Picknick aan de Sarre" /></div>
+    <div class="field"><label>Wat is het?</label><textarea name="what" placeholder="Korte omschrijving"></textarea></div>
+    <div class="two">
+      <div class="field"><label>Plaats</label><input name="town" placeholder="bv. Sarrewerden" /></div>
+      <div class="field"><label>Afstand (km)</label><input name="dist" type="number" min="0" step="1" placeholder="bv. 8" /></div>
+    </div>
+    <div class="two">
+      <div class="field"><label>Soort</label><select name="category" id="addCat"></select></div>
+      <div class="field"><label>Datum (optioneel)</label><input name="date" type="date" /></div>
+    </div>
+    <div class="field"><label>Link (optioneel)</label><input name="url" type="url" placeholder="https://…" /></div>
+    <div class="field"><label>Voor wie</label>
+      <span style="display:flex;gap:14px;font-size:14px;margin-top:2px">
+        <label style="font-weight:400"><input type="checkbox" name="aud" value="peuter"/> Peuter</label>
+        <label style="font-weight:400"><input type="checkbox" name="aud" value="kids" checked/> Kids</label>
+        <label style="font-weight:400"><input type="checkbox" name="aud" value="ouders"/> Ouders</label>
+      </span>
+    </div>
+    <div class="dlg-actions">
+      <button class="btn ghost" value="cancel" formnovalidate>Annuleren</button>
+      <button class="btn" value="ok">Toevoegen</button>
+    </div>
+  </form>
+</dialog>
+
+<footer>
+  <div class="wrap cols">
+    <div>
+      <h4>Reserveren &amp; info</h4>
+      Veel CCAB-activiteiten vereisen inschrijving.<br/>
+      Office de Tourisme: <a href="tel:+33388004039">03 88 00 40 39</a> · <a href="mailto:tourisme@alsace-bossue.net">tourisme@alsace-bossue.net</a><br/>
+      Grange aux Paysages: <a href="tel:+33388005555">03 88 00 55 55</a><br/>
+      Agenda: <a href="https://www.alsace-bossue.net" target="_blank" rel="noopener">alsace-bossue.net</a>
+    </div>
+    <div>
+      <h4>Nog checken</h4>
+      Wekelijkse markt Saverne (waarschijnlijk do-ochtend) en kleine dorpsfeesten worden vaak laat aangekondigd — kijk vlak voor vertrek op <a href="https://www.alsace-bossue.net/agenda-complet.html" target="_blank" rel="noopener">de CCAB-agenda</a>.
+    </div>
+    <div>
+      <h4>Foto's toevoegen</h4>
+      Elke kaart heeft een beeldslot. Zet een <code>img</code> bij een activiteit (lokaal pad <code>images/…jpg</code> of een vrije foto, bv. Wikimedia Commons) en het verschijnt vanzelf. Zonder foto toont 'ie een gekleurde categorie-stempel.
+    </div>
+  </div>
+</footer>
+
+<script>
+/* =========================================================================
+   DATA — voeg hier simpel nieuwe activiteiten toe (of via de knop ＋Eigen plan)
+   Velden:
+     id, title, what, town, dist(km, ~), category, tags:['peuter','kids','ouders'],
+     dates: null (altijd) | ['2026-07-22',...] | {from:'…',to:'…'},
+     whenLabel, rating(0-5|null), price, book, url(info), img(null|pad/URL),
+     source: 'ccab' (lokaal programma) | 'web' (omgeving)
+   Categorieën: natuur · dieren · water · erfgoed · feest · actief
+   ========================================================================= */
+const HOME = "27 Rue Lot. Waldmatt, 67320 Schœnbourg, France";
+
+const CATS = {
+  natuur:{label:"Natuur",  color:"var(--natuur)", emoji:"🌲"},
+  dieren:{label:"Dieren & boerderij", color:"var(--dieren)", emoji:"🐐"},
+  water: {label:"Water & varen", color:"var(--water)", emoji:"🛶"},
+  erfgoed:{label:"Erfgoed & cultuur", color:"var(--erfgoed)", emoji:"🏛️"},
+  feest: {label:"Feest & spektakel", color:"var(--feest)", emoji:"🎪"},
+  actief:{label:"Actief", color:"var(--actief)", emoji:"🚲"},
+};
+
+const ACTIVITIES = [
+  /* ---- Omgeving / grotere attracties (web) ---- */
+  {id:"saintecroix", title:"Parc animalier de Sainte-Croix", what:"120 ha dierenpark met Europese fauna, ~1.500 dieren. Topper, reken op een hele dag.", town:"Rhodes", dist:40, category:"dieren", tags:["peuter","kids","ouders"], dates:null, rating:4.6, price:"€€", url:"https://www.parc-saintecroix.com", img:null, source:"web"},
+  {id:"kintzheim", title:"Cigoland + Volerie des Aigles + Montagne des Singes", what:"Attractiepark, roofvogelshow en apenberg, dicht bij elkaar. Ver — maak er een dagtrip van.", town:"Kintzheim", dist:90, category:"dieren", tags:["kids","ouders"], dates:null, rating:4.6, price:"€€", url:"https://www.cigoland.fr", img:null, source:"web"},
+  {id:"petitepierre", title:"La Petite-Pierre & Vosges du Nord", what:"Vestingdorp met bos, makkelijke wandelingen en speeltuinen. Kinderwagen-vriendelijk op verharde paden.", town:"La Petite-Pierre", dist:18, category:"natuur", tags:["peuter","kids","ouders"], dates:null, rating:4.5, price:"gratis", url:"https://www.tourisme-lapetitepierre.com", img:null, source:"web"},
+  {id:"rohan", title:"Château des Rohan & centrum Saverne", what:"Kasteel, vakwerkhuizen en rozentuin (~8.500 rozen). Kort en kindvriendelijk.", town:"Saverne", dist:20, category:"erfgoed", tags:["kids","ouders"], dates:null, rating:4.1, price:"€", url:"https://www.tourisme-saverne.fr", img:null, source:"web"},
+  {id:"hautbarr", title:"Château du Haut-Barr", what:"Kasteelruïne op rotsen, mooi uitzicht. ~1,5 km door het bos — draagzak voor de jongste.", town:"Saverne", dist:21, category:"erfgoed", tags:["kids","ouders"], dates:null, rating:4.5, price:"gratis", url:"https://www.tourisme-saverne.fr", img:null, source:"web"},
+  {id:"oceanide", title:"Zwembad L'Océanide", what:"Binnen- en buitenbad met peuterbad. Handig op een warme dag.", town:"Saverne", dist:20, category:"water", tags:["peuter","kids","ouders"], dates:null, rating:3.8, price:"€", url:"https://www.cc-saverne.fr", img:null, source:"web"},
+  {id:"botanique", title:"Jardin botanique du col de Saverne", what:"Botanische tuin / arboretum. Rustig en mooi.", town:"Saverne", dist:22, category:"natuur", tags:["kids","ouders"], dates:null, rating:4.0, price:"€", url:"https://jardin-botanique-saverne.org", img:null, source:"web"},
+  {id:"planincline", title:"Plan Incliné Saint-Louis-Arzviller", what:"Unieke scheepslift in Europa + museum. Korte rondleiding (30 min) ideaal; lange boottocht (1,5 u) minder voor 1½.", town:"Arzviller", dist:35, category:"actief", tags:["kids","ouders"], dates:null, rating:4.5, price:"€€", url:"https://visitgrandest.com/plan-incline-de-saint-louis-arzviller", img:null, source:"web"},
+  {id:"sarrebourg", title:"Plan d'eau de Sarrebourg", what:"Meer met strandje en picknick. Fijn voor warme dagen.", town:"Sarrebourg", dist:30, category:"water", tags:["peuter","kids","ouders"], dates:null, rating:4.0, price:"gratis", url:null, img:null, source:"web"},
+
+  /* ---- CCAB-zomerprogramma, BINNEN het verblijf (18–31 juli) ---- */
+  {id:"animtarue", title:"Anim'ta rue", what:"Rondreizende zomeranimatie: houten spellen, knutsel, circus, muziek. Wisselende dorpen.", town:"Alsace Bossue", dist:8, category:"feest", tags:["peuter","kids","ouders"], dates:{from:"2026-07-13",to:"2026-07-31"}, whenLabel:"13–31 jul · 14–18u", rating:null, price:"gratis", book:null, url:"https://www.alsace-bossue.net", img:null, source:"ccab"},
+  {id:"saxs", title:"Concert pique-nique Saxs'Union", what:"Saxofoonensemble aan de rivier bij Pont de l'Isch. Neem je picknick mee. (regen → 25/7)", town:"Wolfskirchen", dist:7, category:"feest", tags:["kids","ouders"], dates:["2026-07-18"], whenLabel:"za 18 jul · 19u30", rating:null, price:"gratis", book:null, url:"https://www.alsace-bossue.net", img:null, source:"ccab"},
+  {id:"helici19", title:"Ferme hélicicole (slakkenboerderij)", what:"Slakkenkwekerij + Limousin-koeien, eindigt met proeverij.", town:"Hirschland", dist:6, category:"dieren", tags:["kids","ouders"], dates:["2026-07-19"], whenLabel:"zo 19 jul · 10u30", rating:null, price:"€4,50", book:"OT reserveren", url:"https://www.alsace-bossue.net", img:null, source:"ccab"},
+  {id:"kirchberg", title:"Après-midi Chapelle du Kirchberg", what:"Een van de hoogste punten: kapel, wandeling, panorama, bar en eten.", town:"Berg", dist:6, category:"natuur", tags:["kids","ouders"], dates:["2026-07-19","2026-07-26"], whenLabel:"zo 19 & 26 jul · v.a. 14u", rating:null, price:"gratis", book:null, url:"https://www.alsace-bossue.net", img:null, source:"ccab"},
+  {id:"escape", title:"Escape Game in het kasteelpark", what:"Vind de schat van de oude tuinier. Voor de grote twee.", town:"Lorentzen", dist:8, category:"actief", tags:["kids"], dates:["2026-07-20"], whenLabel:"ma 20 jul · 9–11u", rating:null, price:"gratis", book:"GAP 03 88 00 55 55", url:"https://www.grangeauxpaysages.fr", img:null, source:"ccab"},
+  {id:"yogapero", title:"Yoga-Péro", what:"Yoga + aperitief op de Kirchberg. Iets voor de ouders (vanaf 10 jr).", town:"Berg", dist:6, category:"natuur", tags:["ouders"], dates:["2026-07-21","2026-07-28"], whenLabel:"di 21 & 28 jul · 18u45", rating:null, price:"vrije gift", book:null, url:"https://www.alsace-bossue.net", img:null, source:"ccab"},
+  {id:"toutptits", title:"Tout P'tits Nature", what:"Ochtend voelen/ontdekken in de natuur — speciaal voor 1–3 jaar. Ideaal voor de jongste.", town:"Lorentzen", dist:8, category:"natuur", tags:["peuter"], dates:["2026-07-22"], whenLabel:"wo 22 jul · 10–11u", rating:null, price:"gratis", book:"GAP 03 88 00 55 55", url:"https://www.grangeauxpaysages.fr", img:null, source:"ccab"},
+  {id:"petitsheros", title:"Voorlezen: Mes petits héros", what:"Verhaaltjes voor de allerkleinsten (0–3 jr) in de médiathèque.", town:"Sarre-Union", dist:12, category:"erfgoed", tags:["peuter"], dates:["2026-07-22"], whenLabel:"wo 22 jul · 11–11u30", rating:null, price:"gratis", book:null, url:null, img:null, source:"ccab"},
+  {id:"petitspaysans", title:"Après-midi petits paysans", what:"Boerderij-immersie: dieren, werkplaatsjes, boerengoûter. Vanaf 18 maanden — dus alle drie.", town:"Harskirchen", dist:12, category:"dieren", tags:["peuter","kids"], dates:["2026-07-22"], whenLabel:"wo 22 jul · 14–16u", rating:null, price:"€12/kind · €3/volw", book:"OT reserveren", url:"https://www.alsace-bossue.net", img:null, source:"ccab"},
+  {id:"thermes", title:"Romeinse thermen van Mackwiller", what:"Een archeoloog en een 'Romein' vertellen over de baden in de oudheid.", town:"Mackwiller", dist:8, category:"erfgoed", tags:["kids","ouders"], dates:["2026-07-22"], whenLabel:"wo 22 jul · 18–19u", rating:null, price:"gratis", book:"OT reserveren", url:"https://www.cip-lavilla.fr", img:null, source:"ccab"},
+  {id:"clubarcheo", title:"Club archéo (meegraven)", what:"Met troffel meedoen aan een echte opgraving op de Romeinse villa.", town:"Dehlingen", dist:12, category:"erfgoed", tags:["kids"], dates:["2026-07-23","2026-07-30"], whenLabel:"do 23 & 30 jul · 11–16u30", rating:null, price:"—", book:"OT reserveren", url:"https://www.cip-lavilla.fr", img:null, source:"ccab"},
+  {id:"opinel", title:"Opinel et bout de ficelle", what:"Natuurspeelgoed maken in een Natura 2000-gebied.", town:"Sarre-Union", dist:12, category:"natuur", tags:["kids"], dates:["2026-07-24"], whenLabel:"vr 24 jul · 14–17u", rating:null, price:"gratis", book:"GAP 03 88 00 55 55", url:"https://www.grangeauxpaysages.fr", img:null, source:"ccab"},
+  {id:"percollons", title:"Circus: Percollons-nous", what:"Acrobatiek onder de tent (Les Branques Associés). Vanaf 3 jaar.", town:"Drulingen", dist:5, category:"feest", tags:["kids","ouders"], dates:["2026-07-24","2026-07-25","2026-07-26","2026-07-31"], whenLabel:"24–26 & 31 jul · avond", rating:null, price:"€5–15", book:"sms 06 10 43 08 55", url:"https://www.alsace-bossue.net", img:null, source:"ccab"},
+  {id:"rcvliegtuig", title:"NK/EK radiografische kunstvliegtuigen", what:"Het grootste stuntvliegconcours van Frankrijk + spectaculaire nachtshow (za 25, 18–23u).", town:"Sarre-Union", dist:12, category:"feest", tags:["kids","ouders"], dates:{from:"2026-07-24",to:"2026-07-26"}, whenLabel:"24–26 jul · 9–18u", rating:null, price:"gratis", book:null, url:null, img:null, source:"ccab"},
+  {id:"rencontre", title:"Rencontre romaine (re-enactment)", what:"Re-enactors laten het Romeinse leven zien op de archeosite. Vrij toegankelijk.", town:"Dehlingen", dist:12, category:"erfgoed", tags:["kids","ouders"], dates:["2026-07-26"], whenLabel:"zo 26 jul · 13u30–17u30", rating:null, price:"gratis", book:null, url:"https://www.cip-lavilla.fr", img:null, source:"ccab"},
+  {id:"gouter", title:"Cuisine ton goûter romain", what:"Zintuigenspel in de gallo-Romeinse tuin, daarna je eigen Romeinse snack maken.", town:"Dehlingen", dist:12, category:"erfgoed", tags:["kids"], dates:["2026-07-29"], whenLabel:"wo 29 jul · 14–17u", rating:null, price:"€5", book:"OT reserveren", url:"https://www.cip-lavilla.fr", img:null, source:"ccab"},
+  {id:"powwow", title:"Festival Pow Wow", what:"Noord-Amerikaanse indianencultuur: dans, kamp, kostuums. Erg leuk voor kinderen.", town:"Steinbourg", dist:18, category:"feest", tags:["kids","ouders"], dates:{from:"2026-07-31",to:"2026-08-02"}, whenLabel:"31 jul–2 aug", rating:null, price:"—", book:null, url:null, img:null, source:"web"},
+  {id:"alpagas", title:"Festival Les Alpagas Bleus", what:"Muziek/cultuur in het kasteelpark. Loopt af op jullie aankomstdag.", town:"Saverne", dist:20, category:"feest", tags:["kids","ouders"], dates:{from:"2026-07-16",to:"2026-07-18"}, whenLabel:"t/m za 18 jul", rating:null, price:"—", book:null, url:null, img:null, source:"web"},
+  {id:"biere", title:"Fête de la Bière", what:"Bierfeest. Vooral voor de ouders.", town:"Schiltigheim", dist:50, category:"feest", tags:["ouders"], dates:{from:"2026-07-31",to:"2026-08-03"}, whenLabel:"31 jul–3 aug", rating:null, price:"—", book:null, url:null, img:null, source:"web"},
+
+  /* ---- CCAB — de hele zomer beschikbaar (op afspraak) ---- */
+  {id:"velorail", title:"Vélorail du Pays Secret", what:"Railfiets voor 4 personen, ~14 km langs het 'ooievaarspad'. Vlakbij.", town:"Drulingen", dist:5, category:"actief", tags:["kids","ouders"], dates:null, whenLabel:"hele zomer · reserveren", rating:null, price:"€€", book:"07 66 49 29 09", url:"https://www.lesvelorailsdugrandest.fr", img:null, source:"ccab"},
+  {id:"barque", title:"Balade en barque op de Sarre", what:"Rustig bootje op de rivier, kijken naar flora en fauna.", town:"Sarrewerden", dist:12, category:"water", tags:["kids","ouders"], dates:null, whenLabel:"hele zomer · reserveren", rating:null, price:"€", book:"OT 03 88 00 40 39", url:"https://www.alsace-bossue.net", img:null, source:"ccab"},
+  {id:"chevalpark", title:"Parc Nature de Cheval", what:"Paardenspektakel 'Les terres oubliées' in een middeleeuws-fantasy decor.", town:"Altwiller", dist:14, category:"dieren", tags:["kids","ouders"], dates:null, whenLabel:"hele zomer · check tijden", rating:null, price:"€€", book:"03 88 01 45 21", url:"https://www.parc-naturedecheval.fr", img:null, source:"ccab"},
+  {id:"randoland", title:"Randoland & Géocaching", what:"Speurtochten en schatzoeken te voet/fiets — 250 km routes in het 'Pays Secret'.", town:"Alsace Bossue", dist:5, category:"natuur", tags:["peuter","kids","ouders"], dates:null, whenLabel:"hele zomer · materiaal bij OT", rating:null, price:"gratis/€", book:null, url:"https://www.alsace-bossue.net", img:null, source:"ccab"},
+  {id:"musee", title:"Musée La Villa + Romeinse villa Gurtelbach", what:"Archeologie en het dagelijks leven in Romeins Elzas, met augmented reality op de site.", town:"Dehlingen", dist:12, category:"erfgoed", tags:["kids","ouders"], dates:null, whenLabel:"hele zomer · check openingstijden", rating:null, price:"€", book:null, url:"https://www.cip-lavilla.fr", img:null, source:"ccab"},
+  {id:"poney", title:"Pony-tochtjes (Écurie de Beltane)", what:"Begeleide ponytochtjes door velden en boomgaarden. Regelmatig — vraag data bij OT.", town:"Dehlingen", dist:12, category:"dieren", tags:["kids"], dates:null, whenLabel:"regelmatig · reserveren", rating:null, price:"€20/kind", book:"06 71 09 33 41", url:"https://www.alsace-bossue.net", img:null, source:"ccab"},
+
+  /* ---- Exposities (lopen je hele verblijf, gratis tenzij anders) ---- */
+  {id:"vuesduciel", title:"Expo: Vues du ciel", what:"Fotowerk over de lucht en het vertragen. Gratis tijdens openingsuren OT.", town:"Lorentzen", dist:8, category:"erfgoed", tags:["kids","ouders"], dates:{from:"2026-05-26",to:"2026-09-05"}, whenLabel:"t/m 5 sep · gratis", rating:null, price:"gratis", book:null, url:"https://www.alsace-bossue.net", img:null, source:"ccab"},
+  {id:"fragment", title:"Expo: Fragment", what:"Rondreizende container met 5 archeologische objecten, interactief. In 3 dorpen.", town:"Alsace Bossue", dist:8, category:"erfgoed", tags:["kids","ouders"], dates:{from:"2026-07-01",to:"2026-08-31"}, whenLabel:"t/m 31 aug · gratis", rating:null, price:"gratis", book:null, url:"https://www.cip-lavilla.fr", img:null, source:"ccab"},
+  {id:"vasa", title:"Expo: Vasa et sapores", what:"Kunst + culinair design rond gallo-Romeinse 'landschaps-borden'.", town:"Dehlingen", dist:12, category:"erfgoed", tags:["kids","ouders"], dates:{from:"2026-07-01",to:"2026-08-31"}, whenLabel:"t/m 31 aug · 14–17u30", rating:null, price:"bij entree", book:null, url:"https://www.cip-lavilla.fr", img:null, source:"ccab"},
+
+  /* ---- Zelf checken ---- */
+  {id:"marktsaverne", title:"Wekelijkse markt Saverne", what:"Laagdrempelig uitje; dag nog bevestigen (waarschijnlijk donderdagochtend).", town:"Saverne", dist:20, category:"feest", tags:["peuter","kids","ouders"], dates:null, whenLabel:"wekelijks · dag checken", rating:null, price:"gratis", book:null, url:"https://www.tourisme-saverne.fr", img:null, source:"web"},
+];
+
+/* ===================== App-logica ===================== */
+const TRIP_FROM="2026-07-18", TRIP_TO="2026-07-31";
+const STORE_KEY="elzas2026.v1";
+
+// status + eigen plannen persistent (veilig: faalt nooit als storage geblokkeerd is)
+let store={status:{}, custom:[]};
+try{ const raw=localStorage.getItem(STORE_KEY); if(raw) store=JSON.parse(raw); }catch(e){}
+function save(){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(store)); }catch(e){} }
+
+const state={ q:"", aud:new Set(), cat:new Set(), maxdist:999, onlyTrip:true, onlyPicked:false, sort:"dist" };
+
+function allItems(){ return [...store.custom, ...ACTIVITIES]; }
+function mapsUrl(it){
+  const dest=encodeURIComponent((it.title?it.title+" ":"")+(it.town||"")+", France");
+  return `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(HOME)}&destination=${dest}`;
+}
+function inTrip(it){
+  if(!it.dates) return true; // altijd beschikbaar
+  if(Array.isArray(it.dates)) return it.dates.some(d=> d>=TRIP_FROM && d<=TRIP_TO);
+  return it.dates.from<=TRIP_TO && it.dates.to>=TRIP_FROM; // range-overlap
+}
+function firstDate(it){
+  if(!it.dates) return "9999";
+  if(Array.isArray(it.dates)) return it.dates.slice().sort()[0];
+  return it.dates.from;
+}
+function matches(it){
+  if(state.onlyTrip && !inTrip(it)) return false;
+  if(it.dist>state.maxdist) return false;
+  if(state.cat.size && !state.cat.has(it.category)) return false;
+  if(state.aud.size && !it.tags.some(t=>state.aud.has(t))) return false;
+  if(state.onlyPicked){ const s=store.status[it.id]; if(s!=="shortlist"&&s!=="geboekt") return false; }
+  if(state.q){
+    const hay=(it.title+" "+(it.what||"")+" "+(it.town||"")+" "+CATS[it.category].label).toLowerCase();
+    if(!hay.includes(state.q.toLowerCase())) return false;
+  }
+  return true;
+}
+
+function render(){
+  const grid=document.getElementById("grid");
+  let items=allItems().filter(matches);
+  items.sort((a,b)=>{
+    if(state.sort==="dist") return a.dist-b.dist;
+    if(state.sort==="rating") return (b.rating||0)-(a.rating||0);
+    return firstDate(a).localeCompare(firstDate(b));
+  });
+
+  document.getElementById("empty").hidden = items.length>0;
+  document.getElementById("resultline").textContent =
+    `${items.length} ${items.length===1?"idee":"ideeën"} · ${state.onlyTrip?"tijdens jullie verblijf":"hele zomer"}`;
+
+  grid.innerHTML = items.map(it=>{
+    const c=CATS[it.category];
+    const st=store.status[it.id]||"";
+    const thumb = it.img
+      ? `<img src="${it.img}" alt="" loading="lazy" onerror="this.remove()"/>`
+      : `<span class="emoji">${c.emoji}</span>`;
+    const peuterTag = it.tags.includes("peuter") ? `<span class="tag peuter">👶 peuter-ok</span>` : "";
+    const resTag = it.book ? `<span class="tag res">reserveren</span>` : "";
+    const rate = it.rating ? `<span class="rate">★ <b>${it.rating.toFixed(1)}</b></span>` : "";
+    const price = it.price ? `<span class="rate">${it.price}</span>` : "";
+    const info = it.url ? `<a href="${it.url}" target="_blank" rel="noopener">Info ↗</a>` : "";
+    return `<article class="card ${st?'is-'+st:''}" style="--cat:${c.color}">
+      <div class="thumb">${thumb}
+        <span class="stamp">~${it.dist} km</span>
+        ${it.whenLabel?`<span class="when">${it.whenLabel}</span>`:``}
+      </div>
+      <div class="body">
+        <span class="cat">${c.label}</span>
+        <h3>${it.title}</h3>
+        <div class="where">📍 ${it.town}</div>
+        <p class="what">${it.what||""}</p>
+        <div class="tagrow">${peuterTag}${resTag}${rate}${price}</div>
+        <div class="links">${info}<a href="${mapsUrl(it)}" target="_blank" rel="noopener">Route ↗</a></div>
+        <div class="foot">
+          <button class="sbtn s-shortlist" data-id="${it.id}" data-s="shortlist" aria-pressed="${st==='shortlist'}">★ Shortlist</button>
+          <button class="sbtn s-geboekt"  data-id="${it.id}" data-s="geboekt"  aria-pressed="${st==='geboekt'}">✓ Geboekt</button>
+          <button class="sbtn s-nee"      data-id="${it.id}" data-s="nee"      aria-pressed="${st==='nee'}">✕ Nee</button>
+        </div>
+      </div>
+    </article>`;
+  }).join("");
+
+  renderCounts();
+}
+
+function renderCounts(){
+  const items=allItems();
+  const n=s=>items.filter(it=>store.status[it.id]===s).length;
+  document.getElementById("counts").innerHTML=`
+    <div class="count"><span class="n">${items.filter(inTrip).length}</span> ideeën tijdens verblijf</div>
+    <div class="count shortlist"><span class="n">${n('shortlist')}</span> op shortlist</div>
+    <div class="count geboekt"><span class="n">${n('geboekt')}</span> geboekt</div>`;
+}
+
+/* categorie-chips opbouwen */
+const catChips=document.getElementById("catChips");
+catChips.innerHTML=Object.entries(CATS).map(([k,c])=>
+  `<button class="chip" data-cat="${k}" aria-pressed="false"><span class="dot" style="background:${c.color}"></span>${c.label}</button>`).join("");
+const addCatSel=document.getElementById("addCat");
+addCatSel.innerHTML=Object.entries(CATS).map(([k,c])=>`<option value="${k}">${c.label}</option>`).join("");
+
+/* events */
+document.getElementById("q").addEventListener("input",e=>{state.q=e.target.value;render();});
+document.getElementById("sort").addEventListener("change",e=>{state.sort=e.target.value;render();});
+document.getElementById("maxdist").addEventListener("change",e=>{state.maxdist=+e.target.value;render();});
+document.getElementById("onlyTrip").addEventListener("change",e=>{state.onlyTrip=e.target.checked;render();});
+document.getElementById("audChips").addEventListener("click",e=>{
+  const b=e.target.closest(".chip"); if(!b)return;
+  const a=b.dataset.aud, on=b.getAttribute("aria-pressed")==="true";
+  b.setAttribute("aria-pressed",String(!on)); on?state.aud.delete(a):state.aud.add(a); render();
+});
+catChips.addEventListener("click",e=>{
+  const b=e.target.closest(".chip"); if(!b)return;
+  const k=b.dataset.cat, on=b.getAttribute("aria-pressed")==="true";
+  b.setAttribute("aria-pressed",String(!on)); on?state.cat.delete(k):state.cat.add(k); render();
+});
+document.getElementById("onlyPicked").addEventListener("click",e=>{
+  state.onlyPicked=!state.onlyPicked; e.currentTarget.setAttribute("aria-pressed",String(state.onlyPicked)); render();
+});
+document.getElementById("grid").addEventListener("click",e=>{
+  const b=e.target.closest(".sbtn"); if(!b)return;
+  const id=b.dataset.id, s=b.dataset.s;
+  store.status[id] = store.status[id]===s ? "" : s; // toggle
+  save(); render();
+});
+
+/* eigen plan */
+const dlg=document.getElementById("addDlg");
+document.getElementById("addBtn").addEventListener("click",()=>dlg.showModal());
+document.getElementById("addForm").addEventListener("submit",e=>{
+  if(e.submitter && e.submitter.value!=="ok") return; // annuleren
+  const f=new FormData(e.target);
+  const aud=[...e.target.querySelectorAll('input[name=aud]:checked')].map(i=>i.value);
+  const item={
+    id:"eigen-"+Date.now(),
+    title:(f.get("title")||"Naamloos plan").trim(),
+    what:(f.get("what")||"").trim(),
+    town:(f.get("town")||"").trim()||"—",
+    dist:Number(f.get("dist"))||0,
+    category:f.get("category")||"feest",
+    tags:aud.length?aud:["iedereen"],
+    dates:f.get("date")?[f.get("date")]:null,
+    whenLabel:f.get("date")?("📌 "+f.get("date")):"eigen idee",
+    rating:null, price:"", book:null,
+    url:(f.get("url")||"").trim()||null, img:null, source:"eigen"
+  };
+  store.custom.unshift(item); save(); render();
+  e.target.reset();
+});
+
+render();
+</script>
+</body>
+</html>
