@@ -163,8 +163,8 @@
   footer .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:22px}
   code{font-family:"Space Mono",monospace;font-size:12px;background:var(--card);border:1px solid var(--line);border-radius:5px;padding:1px 5px}
 
-  /* ---------- Mobiel: filters inklapbaar zodat de ideeën zichtbaar blijven ---------- */
-  @media (max-width:720px){
+  /* ---------- Mobiel + landscape: filters inklapbaar zodat de ideeën zichtbaar blijven ---------- */
+  @media (max-width:720px), (orientation:landscape) and (max-height:600px){
     .controls{padding:10px 0}
     .filtertoggle{display:inline-flex;align-items:center;gap:5px}
     .row.primary{gap:8px}
