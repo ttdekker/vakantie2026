@@ -54,6 +54,9 @@
   .controls{position:sticky;top:0;z-index:20;background:rgba(238,241,236,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:14px 0}
   .controls .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
   .controls .row + .row{margin-top:10px}
+  .filterpanel{margin-top:10px}
+  .filtertoggle{display:none}            /* desktop: filters altijd zichtbaar, knop verborgen */
+  .filtertoggle .badge{font-family:"Space Mono",monospace;font-size:11px;background:var(--feest);color:#fff;border-radius:999px;padding:0 6px;margin-left:2px}
   .search{flex:1 1 220px;min-width:0}
   input[type=search],select{font:inherit;font-size:14px;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:9px 12px;width:100%}
   select{width:auto;cursor:pointer}
@@ -160,6 +163,18 @@
   footer .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:22px}
   code{font-family:"Space Mono",monospace;font-size:12px;background:var(--card);border:1px solid var(--line);border-radius:5px;padding:1px 5px}
 
+  /* ---------- Mobiel: filters inklapbaar zodat de ideeën zichtbaar blijven ---------- */
+  @media (max-width:720px){
+    .controls{padding:10px 0}
+    .filtertoggle{display:inline-flex;align-items:center;gap:5px}
+    .row.primary{gap:8px}
+    .row.primary .search{flex:1 1 140px}
+    .filterpanel{display:none}                       /* standaard ingeklapt */
+    .controls.open .filterpanel{display:block;max-height:70vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
+    .controls.open .filtertoggle{background:var(--ink);color:#fff}
+    .filterpanel .row{margin-top:10px}
+    .filterpanel select,.filterpanel .btn,.filterpanel .toggle{flex:1 1 auto}
+  }
   @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
@@ -196,42 +211,47 @@
   </div>
 </header>
 
-<div class="controls">
+<div class="controls" id="controls">
   <div class="wrap">
-    <div class="row">
-      <div class="search"><input type="search" id="q" placeholder="Zoek (bv. ooievaar, Romeins, vélorail, zwemmen)…" aria-label="Zoeken" /></div>
-      <label class="toggle"><input type="checkbox" id="onlyTrip" checked /> Alleen tijdens ons verblijf</label>
-      <label class="toggle rain"><input type="checkbox" id="rainproof" /> ☔ Regendag-proof</label>
-      <select id="sort" aria-label="Sorteren">
-        <option value="dist">Sorteer: dichtstbij</option>
-        <option value="date">Sorteer: op datum</option>
-        <option value="rating">Sorteer: best beoordeeld</option>
-      </select>
-      <select id="maxdist" aria-label="Max afstand">
-        <option value="999">Afstand: alles</option>
-        <option value="15">≤ 15 km</option>
-        <option value="25">≤ 25 km</option>
-        <option value="45">≤ 45 km</option>
-      </select>
+    <div class="row primary">
+      <div class="search"><input type="search" id="q" placeholder="Zoek (bv. ooievaar, Romeins, zwemmen)…" aria-label="Zoeken" /></div>
       <div class="seg" role="group" aria-label="Weergave">
         <button data-view="list" aria-pressed="true">☰ Lijst</button>
         <button data-view="map" aria-pressed="false">🗺️ Kaart</button>
       </div>
-      <button class="btn" id="addBtn">＋ Eigen plan</button>
+      <button class="btn ghost filtertoggle" id="filterToggle" aria-expanded="false" aria-controls="filterPanel">⚙ Filters</button>
     </div>
-    <div class="row">
-      <span class="label">Voor wie</span>
-      <div class="chips" id="audChips">
-        <button class="chip" data-aud="peuter" aria-pressed="false">👶 Peuter (1½)</button>
-        <button class="chip" data-aud="kids" aria-pressed="false">🧒 Kids 7 &amp; 9</button>
-        <button class="chip" data-aud="ouders" aria-pressed="false">🧑 Ouders</button>
+    <div class="filterpanel" id="filterPanel">
+      <div class="row">
+        <label class="toggle"><input type="checkbox" id="onlyTrip" checked /> Alleen tijdens ons verblijf</label>
+        <label class="toggle rain"><input type="checkbox" id="rainproof" /> ☔ Regendag-proof</label>
+        <select id="sort" aria-label="Sorteren">
+          <option value="dist">Sorteer: dichtstbij</option>
+          <option value="date">Sorteer: op datum</option>
+          <option value="rating">Sorteer: best beoordeeld</option>
+        </select>
+        <select id="maxdist" aria-label="Max afstand">
+          <option value="999">Afstand: alles</option>
+          <option value="15">≤ 15 km</option>
+          <option value="25">≤ 25 km</option>
+          <option value="45">≤ 45 km</option>
+        </select>
+        <button class="btn" id="addBtn">＋ Eigen plan</button>
       </div>
-    </div>
-    <div class="row">
-      <span class="label">Soort</span>
-      <div class="chips" id="catChips"></div>
-      <span style="flex:1"></span>
-      <button class="chip" id="onlyPicked" aria-pressed="false">★ Alleen shortlist/geboekt</button>
+      <div class="row">
+        <span class="label">Voor wie</span>
+        <div class="chips" id="audChips">
+          <button class="chip" data-aud="peuter" aria-pressed="false">👶 Peuter (1½)</button>
+          <button class="chip" data-aud="kids" aria-pressed="false">🧒 Kids 7 &amp; 9</button>
+          <button class="chip" data-aud="ouders" aria-pressed="false">🧑 Ouders</button>
+        </div>
+      </div>
+      <div class="row">
+        <span class="label">Soort</span>
+        <div class="chips" id="catChips"></div>
+        <span style="flex:1"></span>
+        <button class="chip" id="onlyPicked" aria-pressed="false">★ Alleen shortlist/geboekt</button>
+      </div>
     </div>
   </div>
 </div>
@@ -482,6 +502,15 @@ function render(){
 
   renderCounts();
   renderPickCount();
+  updateFilterBadge();
+}
+
+function updateFilterBadge(){
+  const n = state.aud.size + state.cat.size
+    + (state.rainproof?1:0) + (state.onlyPicked?1:0)
+    + (state.maxdist!==999?1:0) + (state.q?1:0) + (state.onlyTrip?0:1);
+  document.getElementById("filterToggle").innerHTML =
+    "⚙ Filters" + (n? ` <span class="badge">${n}</span>` : "");
 }
 
 function cardHtml(it){
@@ -673,6 +702,12 @@ document.getElementById("onlyPicked").addEventListener("click",e=>{
   state.onlyPicked=!state.onlyPicked; e.currentTarget.setAttribute("aria-pressed",String(state.onlyPicked)); render();
 });
 document.querySelectorAll("[data-view]").forEach(b=>b.addEventListener("click",()=>setView(b.dataset.view)));
+const filterToggle=document.getElementById("filterToggle");
+filterToggle.addEventListener("click",()=>{
+  const c=document.getElementById("controls");
+  const open=c.classList.toggle("open");
+  filterToggle.setAttribute("aria-expanded", String(open));
+});
 document.getElementById("grid").addEventListener("click",e=>{
   const b=e.target.closest(".sbtn"); if(!b)return;
   const id=b.dataset.id, s=b.dataset.s;
