@@ -139,6 +139,8 @@
   .leaflet-popup-content{font-family:"Inter",sans-serif;font-size:13px;line-height:1.45}
   .leaflet-popup-content strong{font-family:"Bricolage Grotesque";font-size:15px}
   .leaflet-popup-content a{color:var(--water);font-weight:600;text-decoration:none}
+  .leaflet-popup-content img.popup-photo{width:100%;max-height:130px;object-fit:cover;border-radius:6px;margin-bottom:6px;display:block}
+  .popup-desc{color:#4A5A56;font-size:12px;margin:5px 0 6px;line-height:1.4}
   .pin span{display:block;width:16px;height:16px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:var(--c);border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.45)}
   .pin.home span{background:#fff;border:2px solid var(--ink);width:20px;height:20px}
 
@@ -574,8 +576,11 @@ function jitter(id){
 }
 function popupHtml(it){
   const info = it.url ? `<a href="${it.url}" target="_blank" rel="noopener">Info ↗</a> · ` : "";
-  return `<strong>${it.title}</strong><br>`
-    + `<span style="color:#5B6B66">📍 ${it.town}${it.whenLabel?" · "+it.whenLabel:""}</span><br>`
+  const photo = it.img ? `<img class="popup-photo" src="${it.img}" alt="" loading="lazy">` : "";
+  const desc = it.what ? `<div class="popup-desc">${it.what}</div>` : "";
+  return `${photo}<strong>${it.title}</strong><br>`
+    + `<span style="color:#5B6B66">📍 ${it.town}${it.whenLabel?" · "+it.whenLabel:""}</span>`
+    + `${desc}`
     + `${info}<a href="${mapsUrl(it)}" target="_blank" rel="noopener">Route ↗</a>`;
 }
 function ensureMap(){
@@ -595,7 +600,7 @@ function renderMap(items){
     const j=jitter(it.id);
     const ll=[base[0]+j[0], base[1]+j[1]];
     pts.push(ll);
-    L.marker(ll, {icon:pinIcon(CATS[it.category].color, false)}).bindPopup(popupHtml(it)).addTo(markerLayer);
+    L.marker(ll, {icon:pinIcon(CATS[it.category].color, false)}).bindPopup(popupHtml(it), {maxWidth:240}).addTo(markerLayer);
   });
   if(pts.length>1){ try{ map.fitBounds(pts, {padding:[34,34], maxZoom:12}); }catch(e){} }
   setTimeout(()=>map.invalidateSize(), 30);
