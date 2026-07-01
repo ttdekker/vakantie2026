@@ -10,22 +10,28 @@ de kaarttegels hebben internet nodig). Open `index.html` direct, of draai
 ## Wat het kan
 
 - **Filteren & zoeken** — zoekbalk, "alleen tijdens verblijf" (18–31 jul), voor
-  wie (peuter / kids / ouders), soort, max afstand, sorteren (afstand / datum /
-  rating) en "alleen shortlist/geboekt".
+  wie geschikt (peuter / kids / ouders), soort, max afstand, sorteren (afstand /
+  datum / rating / meeste stemmen) en "alleen shortlist/geboekt".
+- **Wie wil erheen** — onder elke kaart tikt ieder gezinslid (Alma, Freija,
+  Marloes, Tom, Lotta) zijn eigen gekleurde bolletje aan. Filter op persoon via
+  "Wie wil erheen", sorteer op meeste stemmen, en de stemmen reizen mee in de
+  deel-link zodat je samen kiest. Bewaard in `localStorage`.
 - **Regendag-proof** — elke kaart heeft een binnen/buiten/beide-label; de
   ☔-toggle verbergt activiteiten die alleen buiten zijn.
 - **Kaartweergave** — schakel tussen Lijst en 🗺️ Kaart. Alle (gefilterde)
-  activiteiten staan als gekleurde stippen rond Schœnbourg op de kaart, met een
-  popup met info- en route-link. Posities zijn de dorpskern bij benadering; voor
-  exacte navigatie gebruik je "Route ↗".
+  activiteiten staan als gekleurde stippen rond Schœnbourg op een moderne kaart,
+  met een **Kaart / Satelliet**-schakelaar, een categorie-legenda en popups met
+  foto, beschrijving, stemmen en info- en route-link. Posities zijn de dorpskern
+  bij benadering; voor exacte navigatie gebruik je "Route ↗" of "Open omgeving
+  in Google Maps".
 - **Brainstorm-status** per kaart: Shortlist / Geboekt / Nee, met telbalk
   bovenaan. Bewaard in `localStorage`.
 - **Exporteren & delen** (werkt op je shortlist + geboekt):
   - **Agenda (.ics)** — items met een datum als agenda-bestand voor je telefoon.
-  - **Markdown** — een nette lijst op je klembord om te appen.
-  - **Deel-link** — je keuzes (inclusief eigen plannen) gecodeerd in de URL, zo
-    deel je het bord zonder account. Open je zo'n link, dan worden de keuzes
-    ingeladen.
+  - **Markdown** — een nette lijst (met wie erheen wil) op je klembord om te appen.
+  - **Deel-link** — je keuzes én stemmen (inclusief eigen plannen) gecodeerd in
+    de URL, zo deel je het bord zonder account. Open je zo'n link, dan worden de
+    keuzes en stemmen samengevoegd met wat er al staat.
 - **Eigen plannen** toevoegen via de ＋-knop (of direct in de `ACTIVITIES`-array).
 
 ## Alle links geverifieerd
@@ -67,6 +73,21 @@ activiteit via de Info-link of de agenda.
 Een nieuwe plaats op de kaart? Voeg de dorpskern-coördinaten toe aan de
 `COORDS`-tabel (`[lat, lon]`).
 
+De stemmen ("wie wil erheen") staan los van de activiteit, in
+`store.votes = { activiteit-id: ["alma","tom", …] }`. De gezinsleden pas je aan
+in de `PEOPLE`-tabel bovenaan het script (naam + kleur).
+
+## Kaart: waarom geen Google Maps JavaScript-API
+
+De kaart is bewust **sleutelvrij**. De Google Maps JavaScript-API (eigen
+markers, popups, styling) vereist een API-sleutel met gekoppelde
+creditcard/billing — dat wilden we niet. Daarom draait de interactieve kaart op
+lokale Leaflet met sleutelvrije tegels: **CARTO Voyager** (strak, Google-achtig)
+plus een **Satelliet**-laag (Esri World Imagery). Voor het échte navigeren wordt
+diep in Google Maps gelinkt: "Route ↗" per pin en "Open omgeving in Google Maps"
+onder de kaart. Wil je later toch de volledige Google-kaart? Dan is een
+API-sleutel + billing de enige weg.
+
 ## Foto's toevoegen
 
 Zet bij een activiteit `img:"images/saintecroix.jpg"` (maak een map `images/`
@@ -80,3 +101,4 @@ categorie-stempel. Gebruik geen auteursrechtelijk beschermde foto's.
   een ankerdag met meerdere opties).
 - Weer-API koppelen aan de regendag-toggle (automatisch voorstellen per dag).
 - Data los trekken naar een `data.json` + `fetch()`.
+- Stemmen-samenvatting: "meest gewild bij het hele gezin" bovenaan uitlichten.
