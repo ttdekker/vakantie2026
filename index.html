@@ -41,27 +41,18 @@
   a{color:var(--water)}
   :focus-visible{outline:2.5px solid var(--water);outline-offset:2px;border-radius:6px}
 
-  /* ---------- Hero ---------- */
-  header.hero{padding:44px 0 26px;background:
+  /* ---------- Hero (compact) ---------- */
+  header.hero{padding:20px 0 16px;background:
       radial-gradient(120% 90% at 88% -10%, color-mix(in srgb,var(--feest) 12%, transparent), transparent 60%),
       radial-gradient(90% 80% at 0% 0%, color-mix(in srgb,var(--natuur) 10%, transparent), transparent 55%);
     border-bottom:1px solid var(--line)}
-  .hero-top{display:flex;align-items:flex-start;gap:18px;justify-content:space-between;flex-wrap:wrap}
-  .eyebrow{font-family:"Space Mono",monospace;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--feest);margin:0 0 8px}
-  h1{font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:clamp(34px,6vw,62px);line-height:.95;margin:0;letter-spacing:-.025em}
-  h1 .sub{display:block;font-weight:500;font-size:clamp(15px,2.4vw,20px);color:var(--muted);letter-spacing:0;margin-top:12px;max-width:40ch}
-  .stork{flex:0 0 auto;width:88px;height:88px;color:var(--erfgoed)}
-  .meta{margin-top:20px;display:flex;gap:8px 12px;flex-wrap:wrap;font-family:"Space Mono",monospace;font-size:12.5px;color:var(--muted)}
-  .meta span{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:5px 12px}
-  .meta b{color:var(--ink);font-weight:700}
-
-  /* ---------- Telbalk ---------- */
-  .counts{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
-  .count{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:9px 14px;display:flex;align-items:center;gap:9px;font-size:13px;box-shadow:var(--shadow)}
-  .count .n{font-family:"Bricolage Grotesque";font-weight:800;font-size:19px;line-height:1}
-  .count.shortlist .n{color:var(--feest)}
-  .count.geboekt .n{color:var(--natuur)}
-  .count.votes .n{color:var(--water)}
+  .hero-top{display:flex;align-items:center;gap:14px}
+  .mark{flex:0 0 auto;width:46px;height:46px}
+  .eyebrow{font-family:"Space Mono",monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--feest);margin:0 0 3px}
+  h1{font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:clamp(23px,4.6vw,38px);line-height:1;margin:0;letter-spacing:-.02em}
+  /* compacte reis-info in plaats van losse pills */
+  .trip-info{margin:9px 0 0;display:flex;gap:4px 16px;flex-wrap:wrap;font-family:"Space Mono",monospace;font-size:12.5px;color:var(--muted)}
+  .trip-info b{color:var(--ink);font-weight:700}
 
   /* ---------- Filterbalk ---------- */
   .controls{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--paper) 88%, transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding:14px 0}
@@ -111,7 +102,6 @@
   .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;display:flex;flex-direction:column;box-shadow:var(--shadow);position:relative;transition:transform .14s, box-shadow .14s}
   .card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg)}
   .card.is-nee{opacity:.5}
-  .card.is-shortlist{border-color:var(--feest);box-shadow:0 0 0 1px var(--feest),var(--shadow)}
   .card.is-geboekt{border-color:var(--natuur);box-shadow:0 0 0 1px var(--natuur),var(--shadow)}
   .thumb{height:118px;position:relative;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--cat) 0%, color-mix(in srgb,var(--cat) 68%, #000 8%) 100%)}
   .thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
@@ -151,14 +141,16 @@
   .sbtn{font:inherit;font-size:12px;cursor:pointer;border:1px solid var(--line);background:var(--paper);border-radius:9px;padding:6px 9px;color:var(--muted);flex:1;min-width:62px;transition:.12s}
   .sbtn:hover{border-color:var(--ink);color:var(--ink)}
   .sbtn[aria-pressed=true]{color:#fff;border-color:transparent}
-  .sbtn.s-shortlist[aria-pressed=true]{background:var(--feest)}
   .sbtn.s-geboekt[aria-pressed=true]{background:var(--natuur)}
   .sbtn.s-nee[aria-pressed=true]{background:var(--muted)}
 
   .empty{text-align:center;color:var(--muted);padding:56px 20px;font-size:15px}
 
   /* ---------- Kaartweergave ---------- */
-  #map{height:580px;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;isolation:isolate;z-index:0;box-shadow:var(--shadow)}
+  #map{position:relative;height:580px;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;isolation:isolate;z-index:0;box-shadow:var(--shadow)}
+  /* mobiel: één vinger scrollt de pagina; deze hint verschijnt kort bij één-vinger-slepen */
+  .map-hint{position:absolute;inset:0;z-index:1200;display:none;align-items:center;justify-content:center;text-align:center;padding:24px;background:rgba(24,37,36,.5);color:#fff;font-size:16px;font-weight:600;pointer-events:none;border-radius:var(--radius);backdrop-filter:blur(1px)}
+  .map-hint.show{display:flex}
   .maptools{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:12px 2px 0}
   .maphint{font-family:"Space Mono",monospace;font-size:11px;color:var(--muted)}
   .legend{display:flex;gap:12px;flex-wrap:wrap;margin:10px 2px 0;font-size:12px;color:var(--muted)}
@@ -177,7 +169,13 @@
   .popup-votes{display:flex;gap:3px;margin:6px 0}
   .pdot{width:19px;height:19px;border-radius:50%;color:#fff;font-size:10px;font-weight:700;display:inline-flex;align-items:center;justify-content:center}
   .pin span{display:block;width:16px;height:16px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:var(--c);border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.45)}
-  .pin.home span{background:#fff;border:2px solid var(--ink);width:20px;height:20px}
+  /* ons verblijf: extra opvallende marker met pulserende ring + label */
+  .homepin{background:none;border:0}
+  .homepin-dot{width:42px;height:42px;border-radius:50%;background:var(--feest);border:3px solid #fff;box-shadow:0 4px 12px rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;font-size:21px;position:relative}
+  .homepin-dot::before{content:"";position:absolute;inset:-7px;border-radius:50%;border:2px solid var(--feest);opacity:.55;animation:homepulse 2.4s ease-out infinite}
+  @keyframes homepulse{0%{transform:scale(.82);opacity:.6}70%{transform:scale(1.5);opacity:0}100%{opacity:0}}
+  .leaflet-tooltip.home-label{background:var(--ink);color:#fff;border:0;box-shadow:0 2px 8px rgba(0,0,0,.4);font-family:"Space Mono",monospace;font-size:11px;font-weight:700;letter-spacing:.04em;padding:2px 8px;border-radius:6px;white-space:nowrap}
+  .leaflet-tooltip.home-label::before{display:none}
 
   /* ---------- Eigen-plan formulier ---------- */
   dialog{border:none;border-radius:20px;padding:0;max-width:480px;width:92%;box-shadow:0 30px 70px -20px rgba(24,37,36,.6)}
@@ -212,9 +210,9 @@
     .controls.open .filtertoggle{background:var(--ink);color:#fff}
     .filterpanel .row{margin-top:11px}
     .filterpanel select,.filterpanel .btn,.filterpanel .toggle{flex:1 1 auto}
-    #map{height:70vh}
+    #map{height:62vh}
   }
-  @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto}}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto}}
 </style>
 </head>
 <body>
@@ -222,31 +220,27 @@
 <header class="hero">
   <div class="wrap">
     <div class="hero-top">
+      <!-- ooievaar: compacte signature -->
+      <svg class="mark" viewBox="0 0 48 48" fill="none" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Ooievaar">
+        <circle cx="24" cy="24" r="22.5" fill="var(--card)" stroke="var(--line2)" stroke-width="1.5"/>
+        <path d="M13 29 Q13 21 24 21 Q30 21 31 26" stroke="var(--erfgoed)" stroke-width="3"/>
+        <path d="M13 29 Q15 34 24 34 Q31 34 31 26" stroke="var(--erfgoed)" stroke-width="3"/>
+        <path d="M31 26 Q33 20 32 15" stroke="var(--erfgoed)" stroke-width="3"/>
+        <path d="M17 27 Q24 31 30 27" stroke="var(--erfgoed)" stroke-width="2"/>
+        <path d="M22 34 L21 43 M27 34 L28 43" stroke="var(--erfgoed)" stroke-width="2.4"/>
+        <path d="M33 15 L43 12" stroke="var(--dieren)" stroke-width="3"/>
+        <circle cx="32.5" cy="14.5" r="2.4" fill="var(--erfgoed)"/>
+      </svg>
       <div>
         <p class="eyebrow">Pays Secret · Alsace Bossue + Vosges du Nord</p>
-        <h1>Wat doen we deze zomer?
-          <span class="sub">Gezinsbrainstorm — 18 t/m 31 juli 2026 · vanuit 27 Rue Lot. Waldmatt, Schœnbourg</span>
-        </h1>
+        <h1>Wat doen we deze zomer?</h1>
       </div>
-      <!-- ooievaar: kleine signature -->
-      <svg class="stork" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <path d="M22 78c10 4 24 4 33-3"/>
-        <path d="M55 72c14-2 24-12 24-26 0-9-6-16-15-16-7 0-12 5-12 12"/>
-        <path d="M52 42l-9-6"/>
-        <path d="M43 36l16-2 14 7"/>
-        <circle cx="62" cy="30" r="1.6" fill="currentColor" stroke="none"/>
-        <path d="M30 80l4-14M40 80l3-12"/>
-      </svg>
     </div>
-
-    <div class="meta">
-      <span>👧 Alma <b>9</b> · Freija <b>7</b> · Lotta <b>1½</b></span>
-      <span>🧑‍🤝‍🧑 met Marloes &amp; Tom</span>
-      <span>📍 Schœnbourg <b>67320</b></span>
-      <span>🗓️ <b>14 dagen</b></span>
+    <div class="trip-info">
+      <span>📍 <b>Schœnbourg</b> · 67320</span>
+      <span>🗓️ <b>18–31 juli 2026</b></span>
+      <span>👨‍👩‍👧‍👧 Alma <b>9</b> · Freija <b>7</b> · Lotta <b>1½</b> · Marloes &amp; Tom</span>
     </div>
-
-    <div class="counts" id="counts"></div>
   </div>
 </header>
 
@@ -294,7 +288,7 @@
         <span class="label">Soort</span>
         <div class="chips" id="catChips"></div>
         <span style="flex:1"></span>
-        <button class="chip" id="onlyPicked" aria-pressed="false">★ Alleen shortlist/geboekt</button>
+        <button class="chip" id="onlyPicked" aria-pressed="false">✓ Alleen geboekt</button>
       </div>
     </div>
   </div>
@@ -304,13 +298,13 @@
   <div class="resultline" id="resultline"></div>
   <div class="exportbar" id="exportbar">
     <span class="exporthint">Jouw keuzes:</span>
-    <button class="xbtn" id="expIcs" title="Download geboekte/shortlist-items met datum als agenda-bestand">⤓ Agenda (.ics)</button>
+    <button class="xbtn" id="expIcs" title="Download geboekte items met datum als agenda-bestand">⤓ Agenda (.ics)</button>
     <button class="xbtn" id="expMd" title="Kopieer je keuzes als lijst om te appen">⧉ Markdown</button>
     <button class="xbtn" id="expShare" title="Kopieer een link die je keuzes én stemmen meeneemt">🔗 Deel-link</button>
     <span class="exporthint" id="pickCount"></span>
   </div>
   <div class="grid" id="grid"></div>
-  <div id="map" hidden></div>
+  <div id="map" hidden><div class="map-hint" id="mapHint">Gebruik twee vingers om de kaart te bewegen</div></div>
   <div class="maptools" id="maptools" hidden>
     <span class="maphint">Stippen staan op de dorpskern bij benadering — gebruik “Route ↗” in de popup voor navigatie.</span>
     <a class="xbtn" id="gmapsAll" target="_blank" rel="noopener">🧭 Open omgeving in Google Maps</a>
@@ -557,7 +551,7 @@ function matches(it){
   if(state.cat.size && !state.cat.has(it.category)) return false;
   if(state.aud.size && !it.tags.some(t=>state.aud.has(t))) return false;
   if(state.who.size){ const v=votesOf(it); if(!v.some(p=>state.who.has(p))) return false; }
-  if(state.onlyPicked){ const s=store.status[it.id]; if(s!=="shortlist"&&s!=="geboekt") return false; }
+  if(state.onlyPicked && store.status[it.id]!=="geboekt") return false;
   if(state.q){
     const hay=(it.title+" "+(it.what||"")+" "+(it.town||"")+" "+CATS[it.category].label).toLowerCase();
     if(!hay.includes(state.q.toLowerCase())) return false;
@@ -592,7 +586,6 @@ function render(){
     grid.innerHTML = items.map(cardHtml).join("");
   }
 
-  renderCounts();
   renderPickCount();
   renderWhoCounts();
   updateFilterBadge();
@@ -642,23 +635,11 @@ function cardHtml(it){
       <div class="links">${info}<a href="${mapsUrl(it)}" target="_blank" rel="noopener">Route ↗</a></div>
       ${votesHtml(it)}
       <div class="foot">
-        <button class="sbtn s-shortlist" data-id="${it.id}" data-s="shortlist" aria-pressed="${st==='shortlist'}">★ Shortlist</button>
         <button class="sbtn s-geboekt"  data-id="${it.id}" data-s="geboekt"  aria-pressed="${st==='geboekt'}">✓ Geboekt</button>
         <button class="sbtn s-nee"      data-id="${it.id}" data-s="nee"      aria-pressed="${st==='nee'}">✕ Nee</button>
       </div>
     </div>
   </article>`;
-}
-
-function renderCounts(){
-  const items=allItems();
-  const n=s=>items.filter(it=>store.status[it.id]===s).length;
-  const totalVotes=items.reduce((a,it)=>a+votesOf(it).length,0);
-  document.getElementById("counts").innerHTML=`
-    <div class="count"><span class="n">${items.filter(inTrip).length}</span> ideeën tijdens verblijf</div>
-    <div class="count shortlist"><span class="n">${n('shortlist')}</span> op shortlist</div>
-    <div class="count geboekt"><span class="n">${n('geboekt')}</span> geboekt</div>
-    <div class="count votes"><span class="n">${totalVotes}</span> stemmen uitgebracht</div>`;
 }
 
 function renderWhoCounts(){
@@ -681,6 +662,25 @@ let map=null, markerLayer=null;
 function pinIcon(color, home){
   return L.divIcon({className:"pin"+(home?" home":""), html:`<span style="--c:${color}"></span>`, iconSize:[18,18], iconAnchor:[9,16], popupAnchor:[0,-14]});
 }
+/* opvallende marker voor ons verblijf */
+function homeIcon(){
+  return L.divIcon({className:"homepin", html:`<div class="homepin-dot">🏡</div>`, iconSize:[42,42], iconAnchor:[21,21], popupAnchor:[0,-20]});
+}
+/* Coöperatieve gestures op touch: één vinger scrollt de pagina, twee vingers
+   bewegen/zoomen de kaart. Zo blijft de pagina scrollbaar op de telefoon. */
+function setupTouchGestures(map){
+  const c=map.getContainer();
+  const hint=document.getElementById("mapHint");
+  let t;
+  map.dragging.disable();                 // standaard uit → één vinger = pagina scrollen
+  c.addEventListener("touchstart",e=>{
+    if(e.touches.length>=2){ map.dragging.enable(); if(hint) hint.classList.remove("show"); }
+    else map.dragging.disable();
+  },{passive:true});
+  c.addEventListener("touchmove",e=>{
+    if(e.touches.length<2 && hint){ hint.classList.add("show"); clearTimeout(t); t=setTimeout(()=>hint.classList.remove("show"),1400); }
+  },{passive:true});
+}
 function jitter(id){
   let h=0; for(const ch of String(id)) h=(h*31+ch.charCodeAt(0))&0xffff;
   return [((h%100)/100-0.5)*0.012, (((h>>4)%100)/100-0.5)*0.012];
@@ -698,7 +698,8 @@ function popupHtml(it){
 }
 function ensureMap(){
   if(map) return;
-  map = L.map("map", {scrollWheelZoom:true}).setView(COORDS["Schœnbourg"], 11);
+  const isTouch = window.matchMedia("(pointer:coarse)").matches;
+  map = L.map("map", {scrollWheelZoom:!isTouch}).setView(COORDS["Schœnbourg"], 11);
   const voyager = L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
     {maxZoom:19, subdomains:"abcd", attribution:'&copy; OpenStreetMap &copy; CARTO'}).addTo(map);
   const sat = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
@@ -720,7 +721,12 @@ function ensureMap(){
   toggle.addTo(map);
 
   markerLayer = L.layerGroup().addTo(map);
-  L.marker(COORDS["Schœnbourg"], {icon:pinIcon("#182524", true)}).addTo(map).bindPopup("🏡 <strong>Ons verblijf</strong><br>Schœnbourg");
+  // Ons verblijf — groot, gekleurd, met pulserende ring, vast label en altijd bovenop
+  L.marker(COORDS["Schœnbourg"], {icon:homeIcon(), zIndexOffset:1000, keyboard:false})
+    .addTo(map)
+    .bindPopup("🏡 <strong>Ons verblijf</strong><br>27 Rue Lot. Waldmatt, Schœnbourg")
+    .bindTooltip("Ons verblijf", {permanent:true, direction:"top", offset:[0,-22], className:"home-label"});
+  if(isTouch) setupTouchGestures(map);
 }
 function renderMap(items){
   ensureMap();
@@ -740,7 +746,7 @@ function renderMap(items){
 function buildLegend(){
   document.getElementById("legend").innerHTML =
     Object.values(CATS).map(c=>`<span class="li"><span class="dot" style="background:${c.color}"></span>${c.label}</span>`).join("")
-    + `<span class="li"><span class="dot" style="background:#fff;border:1.5px solid var(--ink)"></span>Ons verblijf</span>`;
+    + `<span class="li"><span class="dot" style="background:var(--feest);border:2px solid #fff;box-shadow:0 0 0 1px var(--line2)"></span>Ons verblijf</span>`;
 }
 function setView(v){
   state.view=v;
@@ -753,7 +759,7 @@ function setView(v){
 }
 
 /* ===================== Export & delen ===================== */
-function pickedItems(){ return allItems().filter(it=>["shortlist","geboekt"].includes(store.status[it.id])); }
+function pickedItems(){ return allItems().filter(it=>store.status[it.id]==="geboekt"); }
 function renderPickCount(){
   const n=pickedItems().length;
   document.getElementById("pickCount").textContent = n? `${n} gekozen` : "nog niets gekozen";
@@ -784,7 +790,7 @@ function buildICS(){
   const evt=(it,start,endExcl,suffix)=>{
     lines.push("BEGIN:VEVENT","UID:"+it.id+(suffix||"")+"@elzas2026","DTSTAMP:"+stamp,
       "DTSTART;VALUE=DATE:"+start.replace(/-/g,""),"DTEND;VALUE=DATE:"+endExcl.replace(/-/g,""),
-      "SUMMARY:"+icsEsc((store.status[it.id]==="geboekt"?"✓ ":"★ ")+it.title));
+      "SUMMARY:"+icsEsc("✓ "+it.title));
     if(it.town) lines.push("LOCATION:"+icsEsc(it.town+", France"));
     const desc=[it.what,it.whenLabel,it.url].filter(Boolean).join(" — ");
     if(desc) lines.push("DESCRIPTION:"+icsEsc(desc));
@@ -801,16 +807,13 @@ function buildICS(){
 function voteNames(it){ return votesOf(it).map(p=>PEOPLE[p]?PEOPLE[p].name:p); }
 function buildMarkdown(){
   const picks=pickedItems();
-  const g=picks.filter(it=>store.status[it.id]==="geboekt");
-  const s=picks.filter(it=>store.status[it.id]==="shortlist");
   const fmt=it=>{
     const who=voteNames(it);
     return `- **${it.title}** — ${it.town}${it.whenLabel?" · "+it.whenLabel:""}${it.price?" · "+it.price:""}${it.book?" · reserveren ("+it.book+")":""}${who.length?" · 👍 "+who.join(", "):""}${it.url?` — ${it.url}`:""}`;
   };
   const out=["# Elzas 2026 — onze keuzes", "", "_Schœnbourg · 18–31 juli 2026_", ""];
-  if(g.length){ out.push("## ✓ Geboekt"); g.forEach(it=>out.push(fmt(it))); out.push(""); }
-  if(s.length){ out.push("## ★ Shortlist"); s.forEach(it=>out.push(fmt(it))); out.push(""); }
-  if(!g.length && !s.length) out.push("_Nog niets gekozen._");
+  if(picks.length){ out.push("## ✓ Geboekt"); picks.forEach(it=>out.push(fmt(it))); }
+  else out.push("_Nog niets gekozen._");
   return out.join("\n");
 }
 function buildShareURL(){
@@ -897,7 +900,7 @@ document.getElementById("grid").addEventListener("click",e=>{
 /* export-knoppen */
 document.getElementById("expIcs").addEventListener("click",()=>{
   const {ics,count,total}=buildICS();
-  if(total===0){ toast("Nog niets op shortlist of geboekt."); return; }
+  if(total===0){ toast("Nog niets geboekt."); return; }
   if(count===0){ toast("Je keuzes hebben (nog) geen datum — niets voor de agenda."); return; }
   download("elzas-2026.ics", ics, "text/calendar;charset=utf-8");
   toast(`${count} ${count===1?"item":"items"} naar agenda (.ics).`);
