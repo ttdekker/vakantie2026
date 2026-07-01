@@ -1,0 +1,14 @@
+{
+  "name": "Elzas 2026 — gezinsplanner",
+  "short_name": "Elzas 2026",
+  "description": "Wat doen we deze zomer? Ideeën, kaart en dagplanning voor ons verblijf in Schœnbourg, 18–31 juli 2026.",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#EEF1EC",
+  "theme_color": "#EEF1EC",
+  "lang": "nl",
+  "icons": [
+    { "src": "img/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "img/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

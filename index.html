@@ -2,317 +2,226 @@
 <html lang="nl">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="theme-color" content="#EEF1EC" />
-<title>Pays Secret — gezinszomer Elzas 2026</title>
+<title>Elzas 2026 — wat doen we deze zomer?</title>
+<meta name="description" content="Gezinsplanner voor onze zomer in de Alsace Bossue: ideeën, kaart en dagplanning, 18–31 juli 2026." />
+<link rel="manifest" href="manifest.webmanifest" />
+<link rel="icon" href="img/icon-192.png" />
+<link rel="apple-touch-icon" href="img/icon-192.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="vendor/leaflet/leaflet.css" />
-<style>
-  :root{
-    --paper:#EEF1EC;       /* pale ciel-mist, niet de cream-default */
-    --paper2:#E6EAE3;      /* iets dieper voor secties */
-    --ink:#182524;         /* diep dennen-inkt */
-    --muted:#5B6B66;
-    --line:#D6DCD3;
-    --line2:#C4CCC0;
-    --card:#FBFCFA;
-    /* categorie-accenten, geworteld in het gebied */
-    --natuur:#3E7A4E;      /* bos / vergers */
-    --dieren:#D98E2B;      /* honing / ooievaar */
-    --water:#2C6E8F;       /* canal de la Sarre */
-    --erfgoed:#6E3B55;     /* Romeins / pruim */
-    --feest:#B85C4A;       /* grès rose des Vosges */
-    --actief:#2E7D74;      /* rail / beweging */
-    --radius:16px;
-    --shadow:0 1px 2px rgba(24,37,36,.04), 0 12px 30px -22px rgba(24,37,36,.55);
-    --shadow-lg:0 24px 60px -28px rgba(24,37,36,.55);
-  }
-  *{box-sizing:border-box}
-  [hidden]{display:none!important}   /* anders wint .grid{display:grid} van het hidden-attribuut → lijst bleef staan bij 'Kaart' */
-  html{scroll-behavior:smooth}
-  body{
-    margin:0;background:var(--paper);color:var(--ink);
-    font-family:"Inter",system-ui,sans-serif;line-height:1.5;
-    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
-  }
-  .wrap{max-width:1140px;margin:0 auto;padding:0 22px}
-  a{color:var(--water)}
-  :focus-visible{outline:2.5px solid var(--water);outline-offset:2px;border-radius:6px}
-
-  /* ---------- Hero (compact) ---------- */
-  header.hero{padding:20px 0 16px;background:
-      radial-gradient(120% 90% at 88% -10%, color-mix(in srgb,var(--feest) 12%, transparent), transparent 60%),
-      radial-gradient(90% 80% at 0% 0%, color-mix(in srgb,var(--natuur) 10%, transparent), transparent 55%);
-    border-bottom:1px solid var(--line)}
-  .hero-top{display:flex;align-items:center;gap:14px}
-  .mark{flex:0 0 auto;width:46px;height:46px}
-  .eyebrow{font-family:"Space Mono",monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--feest);margin:0 0 3px}
-  h1{font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:clamp(23px,4.6vw,38px);line-height:1;margin:0;letter-spacing:-.02em}
-  /* compacte reis-info in plaats van losse pills */
-  .trip-info{margin:9px 0 0;display:flex;gap:4px 16px;flex-wrap:wrap;font-family:"Space Mono",monospace;font-size:12.5px;color:var(--muted)}
-  .trip-info b{color:var(--ink);font-weight:700}
-
-  /* ---------- Filterbalk ---------- */
-  .controls{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--paper) 88%, transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding:14px 0}
-  .controls .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-  .controls .row + .row{margin-top:11px}
-  .filterpanel{margin-top:11px}
-  .filtertoggle{display:none}            /* desktop: filters altijd zichtbaar, knop verborgen */
-  .filtertoggle .badge{font-family:"Space Mono",monospace;font-size:11px;background:var(--feest);color:#fff;border-radius:999px;padding:0 6px;margin-left:2px}
-  .search{flex:1 1 240px;min-width:0;position:relative}
-  .search::before{content:"⌕";position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:16px;pointer-events:none}
-  .search input{padding-left:32px}
-  input[type=search],select{font:inherit;font-size:14px;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:11px;padding:10px 12px;width:100%;transition:border-color .12s, box-shadow .12s}
-  input[type=search]:hover,select:hover{border-color:var(--line2)}
-  select{width:auto;cursor:pointer}
-  .label{font-family:"Space Mono",monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-right:2px}
-  .chips{display:flex;gap:7px;flex-wrap:wrap}
-  .chip{font:inherit;font-size:13px;cursor:pointer;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:6px 12px;color:var(--ink);display:inline-flex;align-items:center;gap:6px;transition:.12s}
-  .chip:hover{border-color:var(--ink);transform:translateY(-1px)}
-  .chip[aria-pressed=true]{background:var(--ink);color:#fff;border-color:var(--ink)}
-  .chip .dot{width:9px;height:9px;border-radius:999px;flex:0 0 auto}
-  .chip .cbadge{font-family:"Space Mono",monospace;font-size:11px;font-weight:700;opacity:.7}
-  .toggle{display:inline-flex;align-items:center;gap:8px;font-size:13.5px;cursor:pointer;user-select:none}
-  .toggle input{appearance:none;width:38px;height:22px;border-radius:999px;background:var(--line2);position:relative;cursor:pointer;transition:.15s;flex:0 0 auto}
-  .toggle input:checked{background:var(--natuur)}
-  .toggle.rain input:checked{background:var(--water)}
-  .toggle input::after{content:"";position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;transition:.15s;box-shadow:0 1px 2px rgba(0,0,0,.3)}
-  .toggle input:checked::after{left:18px}
-  .btn{font:inherit;font-size:14px;font-weight:600;cursor:pointer;border-radius:11px;padding:10px 15px;border:1px solid var(--ink);background:var(--ink);color:#fff;transition:.12s}
-  .btn.ghost{background:transparent;color:var(--ink)}
-  .btn:hover{transform:translateY(-1px);box-shadow:var(--shadow)}
-  /* view-schakelaar Lijst/Kaart */
-  .seg{display:inline-flex;border:1px solid var(--line);border-radius:11px;overflow:hidden;background:var(--card)}
-  .seg button{font:inherit;font-size:13px;cursor:pointer;border:0;background:transparent;color:var(--ink);padding:10px 14px;display:inline-flex;align-items:center;gap:6px;transition:.12s}
-  .seg button+button{border-left:1px solid var(--line)}
-  .seg button[aria-pressed=true]{background:var(--ink);color:#fff}
-
-  /* ---------- Export / deel-balk ---------- */
-  .exportbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 16px;padding:12px 14px;background:var(--paper2);border:1px solid var(--line);border-radius:13px}
-  .exporthint{font-family:"Space Mono",monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
-  .xbtn{font:inherit;font-size:13px;cursor:pointer;border:1px solid var(--line);background:var(--card);border-radius:10px;padding:7px 12px;color:var(--ink);box-shadow:var(--shadow);display:inline-flex;align-items:center;gap:6px;text-decoration:none;transition:.12s}
-  .xbtn:hover{border-color:var(--ink);transform:translateY(-1px)}
-
-  /* ---------- Grid + kaarten ---------- */
-  main{padding:26px 0 60px}
-  .resultline{font-family:"Space Mono",monospace;font-size:12px;color:var(--muted);margin:2px 0 16px}
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;display:flex;flex-direction:column;box-shadow:var(--shadow);position:relative;transition:transform .14s, box-shadow .14s}
-  .card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg)}
-  .card.is-nee{opacity:.5}
-  .card.is-geboekt{border-color:var(--natuur);box-shadow:0 0 0 1px var(--natuur),var(--shadow)}
-  .thumb{height:118px;position:relative;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--cat) 0%, color-mix(in srgb,var(--cat) 68%, #000 8%) 100%)}
-  .thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-  .thumb .emoji{font-size:42px;filter:drop-shadow(0 2px 6px rgba(0,0,0,.25))}
-  /* afstand-stempel: het signature-element */
-  .stamp{position:absolute;top:10px;right:10px;background:var(--paper);color:var(--ink);border:1px dashed rgba(24,37,36,.45);border-radius:8px;padding:4px 8px;font-family:"Space Mono",monospace;font-size:12px;font-weight:700;letter-spacing:.02em}
-  .when{position:absolute;left:10px;bottom:10px;background:rgba(0,0,0,.58);color:#fff;border-radius:7px;padding:3px 8px;font-family:"Space Mono",monospace;font-size:11px;backdrop-filter:blur(2px)}
-  .body{padding:14px 16px 16px;display:flex;flex-direction:column;gap:8px;flex:1}
-  .cat{font-family:"Space Mono",monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--cat);font-weight:700}
-  .card h3{font-family:"Bricolage Grotesque";font-weight:700;font-size:19px;line-height:1.12;margin:0;letter-spacing:-.01em}
-  .where{font-size:12.5px;color:var(--muted)}
-  .what{font-size:13.5px;color:#33433f;margin:0}
-  .tagrow{display:flex;gap:6px;flex-wrap:wrap;margin-top:1px;align-items:center}
-  .tag{font-size:11px;border:1px solid var(--line);border-radius:6px;padding:2px 7px;color:var(--muted);background:var(--paper)}
-  .tag.peuter{color:var(--dieren);border-color:color-mix(in srgb,var(--dieren) 40%,var(--line))}
-  .tag.res{color:var(--feest);border-color:color-mix(in srgb,var(--feest) 40%,var(--line))}
-  .tag.verify{color:var(--feest);border-color:color-mix(in srgb,var(--feest) 55%,var(--line));font-weight:600}
-  /* binnen/buiten-label voor regendag-planning */
-  .envtag{font-size:11px;border:1px solid var(--line);border-radius:6px;padding:2px 7px;background:var(--paper);color:var(--muted)}
-  .envtag.buiten{color:var(--natuur);border-color:color-mix(in srgb,var(--natuur) 40%,var(--line))}
-  .envtag.binnen{color:var(--water);border-color:color-mix(in srgb,var(--water) 40%,var(--line))}
-  .envtag.beide{color:var(--erfgoed);border-color:color-mix(in srgb,var(--erfgoed) 40%,var(--line))}
-  .rate{font-family:"Space Mono",monospace;font-size:12px;color:var(--muted)}
-  .rate b{color:var(--ink)}
-  .links{display:flex;gap:14px;margin-top:2px}
-  .links a{font-size:13px;font-weight:600;color:var(--water);text-decoration:none}
-  .links a:hover{text-decoration:underline}
-
-  /* ---------- Wie wil erheen (stemmen per persoon) ---------- */
-  .votes{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:3px;padding-top:11px;border-top:1px dashed var(--line)}
-  .votes .vlabel{font-family:"Space Mono",monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-right:1px}
-  .pvote{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--pc);background:transparent;color:var(--pc);font:inherit;font-weight:700;font-size:12px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:.12s;padding:0}
-  .pvote:hover{transform:translateY(-2px)}
-  .pvote[aria-pressed=true]{background:var(--pc);color:#fff;box-shadow:0 3px 10px -3px var(--pc)}
-
-  .foot{margin-top:auto;padding-top:12px;display:flex;gap:6px;flex-wrap:wrap}
-  .sbtn{font:inherit;font-size:12px;cursor:pointer;border:1px solid var(--line);background:var(--paper);border-radius:9px;padding:6px 9px;color:var(--muted);flex:1;min-width:62px;transition:.12s}
-  .sbtn:hover{border-color:var(--ink);color:var(--ink)}
-  .sbtn[aria-pressed=true]{color:#fff;border-color:transparent}
-  .sbtn.s-geboekt[aria-pressed=true]{background:var(--natuur)}
-  .sbtn.s-nee[aria-pressed=true]{background:var(--muted)}
-
-  .empty{text-align:center;color:var(--muted);padding:56px 20px;font-size:15px}
-
-  /* ---------- Kaartweergave ---------- */
-  #map{position:relative;height:580px;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;isolation:isolate;z-index:0;box-shadow:var(--shadow)}
-  /* mobiel: één vinger scrollt de pagina; deze hint verschijnt kort bij één-vinger-slepen */
-  .map-hint{position:absolute;inset:0;z-index:1200;display:none;align-items:center;justify-content:center;text-align:center;padding:24px;background:rgba(24,37,36,.5);color:#fff;font-size:16px;font-weight:600;pointer-events:none;border-radius:var(--radius);backdrop-filter:blur(1px)}
-  .map-hint.show{display:flex}
-  .maptools{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:12px 2px 0}
-  .maphint{font-family:"Space Mono",monospace;font-size:11px;color:var(--muted)}
-  .legend{display:flex;gap:12px;flex-wrap:wrap;margin:10px 2px 0;font-size:12px;color:var(--muted)}
-  .legend .li{display:inline-flex;align-items:center;gap:5px}
-  .legend .dot{width:11px;height:11px;border-radius:50%}
-  /* zelf-gestylede laag-schakelaar op de kaart (Kaart / Satelliet) */
-  .maptoggle{display:flex;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;box-shadow:var(--shadow)}
-  .maptoggle button{font:inherit;font-size:12px;font-weight:600;border:0;background:transparent;padding:7px 11px;cursor:pointer;color:var(--ink)}
-  .maptoggle button+button{border-left:1px solid var(--line)}
-  .maptoggle button.active{background:var(--ink);color:#fff}
-  .leaflet-popup-content{font-family:"Inter",sans-serif;font-size:13px;line-height:1.45}
-  .leaflet-popup-content strong{font-family:"Bricolage Grotesque";font-size:15px}
-  .leaflet-popup-content a{color:var(--water);font-weight:600;text-decoration:none}
-  .leaflet-popup-content img.popup-photo{width:100%;max-height:130px;object-fit:cover;border-radius:6px;margin-bottom:6px;display:block}
-  .popup-desc{color:#4A5A56;font-size:12px;margin:5px 0 6px;line-height:1.4}
-  .popup-votes{display:flex;gap:3px;margin:6px 0}
-  .pdot{width:19px;height:19px;border-radius:50%;color:#fff;font-size:10px;font-weight:700;display:inline-flex;align-items:center;justify-content:center}
-  .pin span{display:block;width:16px;height:16px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:var(--c);border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.45)}
-  /* ons verblijf: extra opvallende marker met pulserende ring + label */
-  .homepin{background:none;border:0}
-  .homepin-dot{width:42px;height:42px;border-radius:50%;background:var(--feest);border:3px solid #fff;box-shadow:0 4px 12px rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;font-size:21px;position:relative}
-  .homepin-dot::before{content:"";position:absolute;inset:-7px;border-radius:50%;border:2px solid var(--feest);opacity:.55;animation:homepulse 2.4s ease-out infinite}
-  @keyframes homepulse{0%{transform:scale(.82);opacity:.6}70%{transform:scale(1.5);opacity:0}100%{opacity:0}}
-  .leaflet-tooltip.home-label{background:var(--ink);color:#fff;border:0;box-shadow:0 2px 8px rgba(0,0,0,.4);font-family:"Space Mono",monospace;font-size:11px;font-weight:700;letter-spacing:.04em;padding:2px 8px;border-radius:6px;white-space:nowrap}
-  .leaflet-tooltip.home-label::before{display:none}
-
-  /* ---------- Eigen-plan formulier ---------- */
-  dialog{border:none;border-radius:20px;padding:0;max-width:480px;width:92%;box-shadow:0 30px 70px -20px rgba(24,37,36,.6)}
-  dialog::backdrop{background:rgba(24,37,36,.42);backdrop-filter:blur(2px)}
-  .dlg{padding:24px 26px 26px}
-  .dlg h2{font-family:"Bricolage Grotesque";font-weight:800;margin:0 0 4px;font-size:25px}
-  .dlg p.note{margin:0 0 16px;color:var(--muted);font-size:13px}
-  .field{margin-bottom:12px}
-  .field label{display:block;font-size:12px;font-weight:600;margin-bottom:4px}
-  .field input,.field select,.field textarea{width:100%;font:inherit;font-size:14px;border:1px solid var(--line);border-radius:10px;padding:9px 11px;background:#fff}
-  .field textarea{resize:vertical;min-height:54px}
-  .two{display:flex;gap:10px}.two>*{flex:1}
-  .dlg-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:6px}
-
-  /* ---------- Toast ---------- */
-  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:11px 16px;border-radius:11px;font-size:14px;box-shadow:0 14px 34px -12px rgba(0,0,0,.6);z-index:50;max-width:90%}
-
-  footer{border-top:1px solid var(--line);padding:28px 0 60px;color:var(--muted);font-size:13px;background:var(--paper2)}
-  footer h4{font-family:"Bricolage Grotesque";color:var(--ink);font-size:15px;margin:0 0 6px}
-  footer a{color:var(--water)}
-  footer .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px}
-  code{font-family:"Space Mono",monospace;font-size:12px;background:var(--card);border:1px solid var(--line);border-radius:5px;padding:1px 5px}
-
-  /* ---------- Mobiel + landscape: filters inklapbaar zodat de ideeën zichtbaar blijven ---------- */
-  @media (max-width:720px), (orientation:landscape) and (max-height:600px){
-    .controls{padding:10px 0}
-    .filtertoggle{display:inline-flex;align-items:center;gap:5px}
-    .row.primary{gap:8px}
-    .row.primary .search{flex:1 1 140px}
-    .filterpanel{display:none}                       /* standaard ingeklapt */
-    .controls.open .filterpanel{display:block;max-height:70vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
-    .controls.open .filtertoggle{background:var(--ink);color:#fff}
-    .filterpanel .row{margin-top:11px}
-    .filterpanel select,.filterpanel .btn,.filterpanel .toggle{flex:1 1 auto}
-    #map{height:62vh}
-  }
-  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto}}
-</style>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/css/style.css" />
 </head>
 <body>
 
+<!-- UI-iconen (sprite) -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></symbol>
+  <symbol id="i-map" viewBox="0 0 24 24"><polygon points="1 6 8 3 16 6 23 3 23 18 16 21 8 18 1 21 1 6"/><line x1="8" y1="3" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="21"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></symbol>
+  <symbol id="i-cal-plus" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="12" y1="13.5" x2="12" y2="18.5"/><line x1="9.5" y1="16" x2="14.5" y2="16"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></symbol>
+  <symbol id="i-car" viewBox="0 0 24 24"><path d="M5 16l1.6-5.2A2 2 0 0 1 8.5 9.4h7a2 2 0 0 1 1.9 1.4L19 16"/><rect x="3" y="16" width="18" height="4" rx="1.5"/><circle cx="7.5" cy="20.5" r="1.4"/><circle cx="16.5" cy="20.5" r="1.4"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></symbol>
+  <symbol id="i-share" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></symbol>
+  <symbol id="i-sliders" viewBox="0 0 24 24"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></symbol>
+  <symbol id="i-ext" viewBox="0 0 24 24"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></symbol>
+  <symbol id="i-nav" viewBox="0 0 24 24"><polygon points="3 11 22 2 13 21 11 13 3 11"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></symbol>
+  <symbol id="i-tree" viewBox="0 0 24 24"><path d="M12 3L19 15H5z"/><line x1="12" y1="15" x2="12" y2="21"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-rain" viewBox="0 0 24 24"><line x1="16" y1="13" x2="16" y2="19"/><line x1="8" y1="13" x2="8" y2="19"/><line x1="12" y1="15" x2="12" y2="21"/><path d="M20 16.58A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25"/></symbol>
+  <symbol id="i-smile" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></symbol>
+  <symbol id="i-reset" viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></symbol>
+  <symbol id="i-euro" viewBox="0 0 24 24"><path d="M17.5 5.5A7.5 7.5 0 0 0 6.8 8.6a7.7 7.7 0 0 0 0 6.8 7.5 7.5 0 0 0 10.7 3.1"/><line x1="4" y1="10.5" x2="14" y2="10.5"/><line x1="4" y1="13.5" x2="14" y2="13.5"/></symbol>
+</svg>
+
 <header class="hero">
+  <img src="img/hero.jpg" alt="La Petite-Pierre, Vosges du Nord" fetchpriority="high" />
+  <!-- ooievaar: het merkje -->
+  <svg class="mark" viewBox="0 0 48 48" fill="none" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Ooievaar">
+    <circle cx="24" cy="24" r="22.5" fill="rgba(251,252,250,.92)"/>
+    <path d="M13 29 Q13 21 24 21 Q30 21 31 26" stroke="#6E3B55" stroke-width="3"/>
+    <path d="M13 29 Q15 34 24 34 Q31 34 31 26" stroke="#6E3B55" stroke-width="3"/>
+    <path d="M31 26 Q33 20 32 15" stroke="#6E3B55" stroke-width="3"/>
+    <path d="M17 27 Q24 31 30 27" stroke="#6E3B55" stroke-width="2"/>
+    <path d="M22 34 L21 43 M27 34 L28 43" stroke="#6E3B55" stroke-width="2.4"/>
+    <path d="M33 15 L43 12" stroke="#D98E2B" stroke-width="3"/>
+    <circle cx="32.5" cy="14.5" r="2.4" fill="#6E3B55"/>
+  </svg>
   <div class="wrap">
-    <div class="hero-top">
-      <!-- ooievaar: compacte signature -->
-      <svg class="mark" viewBox="0 0 48 48" fill="none" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Ooievaar">
-        <circle cx="24" cy="24" r="22.5" fill="var(--card)" stroke="var(--line2)" stroke-width="1.5"/>
-        <path d="M13 29 Q13 21 24 21 Q30 21 31 26" stroke="var(--erfgoed)" stroke-width="3"/>
-        <path d="M13 29 Q15 34 24 34 Q31 34 31 26" stroke="var(--erfgoed)" stroke-width="3"/>
-        <path d="M31 26 Q33 20 32 15" stroke="var(--erfgoed)" stroke-width="3"/>
-        <path d="M17 27 Q24 31 30 27" stroke="var(--erfgoed)" stroke-width="2"/>
-        <path d="M22 34 L21 43 M27 34 L28 43" stroke="var(--erfgoed)" stroke-width="2.4"/>
-        <path d="M33 15 L43 12" stroke="var(--dieren)" stroke-width="3"/>
-        <circle cx="32.5" cy="14.5" r="2.4" fill="var(--erfgoed)"/>
-      </svg>
-      <div>
-        <p class="eyebrow">Pays Secret · Alsace Bossue + Vosges du Nord</p>
-        <h1>Wat doen we deze zomer?</h1>
-      </div>
-    </div>
-    <div class="trip-info">
-      <span>📍 <b>Schœnbourg</b> · 67320</span>
-      <span>🗓️ <b>18–31 juli 2026</b></span>
-      <span>👨‍👩‍👧‍👧 Alma <b>9</b> · Freija <b>7</b> · Lotta <b>1½</b> · Marloes &amp; Tom</span>
+    <p class="eyebrow">Alsace Bossue · Vosges du Nord</p>
+    <h1>Wat doen we deze zomer?</h1>
+    <div class="sub">
+      <span><svg class="icon sm"><use href="#i-pin"/></svg> Schœnbourg</span>
+      <span class="dotsep">·</span>
+      <span><svg class="icon sm"><use href="#i-cal"/></svg> 18–31 juli 2026</span>
+      <span class="dotsep">·</span>
+      <span>Alma · Freija · Lotta · Marloes · Tom</span>
+      <span class="countdown" id="countdown"></span>
     </div>
   </div>
 </header>
 
-<div class="controls" id="controls">
+<div class="topbar" id="topbar">
   <div class="wrap">
-    <div class="row primary">
-      <div class="search"><input type="search" id="q" placeholder="Zoek (bv. ooievaar, Romeins, zwemmen)…" aria-label="Zoeken" /></div>
-      <div class="seg" role="group" aria-label="Weergave">
-        <button data-view="list" aria-pressed="true">☰ Lijst</button>
-        <button data-view="map" aria-pressed="false">🗺️ Kaart</button>
+    <div class="bar">
+      <div class="search"><svg class="icon"><use href="#i-search"/></svg><input type="search" id="q" placeholder="Zoek een uitje…" aria-label="Zoeken" /></div>
+      <div class="tabs" role="group" aria-label="Weergave" id="tabs">
+        <button data-view="ontdek" aria-pressed="true"><svg class="icon sm"><use href="#i-list"/></svg> Ontdek</button>
+        <button data-view="kaart" aria-pressed="false"><svg class="icon sm"><use href="#i-map"/></svg> Kaart</button>
+        <button data-view="plan" aria-pressed="false"><svg class="icon sm"><use href="#i-cal"/></svg> Ons plan</button>
       </div>
-      <button class="btn ghost filtertoggle" id="filterToggle" aria-expanded="false" aria-controls="filterPanel">⚙ Filters</button>
+      <button class="iconbtn" id="shareBtn" title="Deel-link kopiëren (keuzes, stemmen en planning reizen mee)" aria-label="Deel-link kopiëren"><svg class="icon"><use href="#i-share"/></svg></button>
     </div>
-    <div class="filterpanel" id="filterPanel">
-      <div class="row">
-        <label class="toggle"><input type="checkbox" id="onlyTrip" checked /> Alleen tijdens ons verblijf</label>
-        <label class="toggle rain"><input type="checkbox" id="rainproof" /> ☔ Regendag-proof</label>
+    <div class="filters" id="filters">
+      <div class="chiprow">
+        <button class="chip" id="pRain" aria-pressed="false"><svg class="icon sm"><use href="#i-rain"/></svg> Regen-oké</button>
+        <button class="chip" id="pFree" aria-pressed="false"><svg class="icon sm"><use href="#i-euro"/></svg> Gratis</button>
+        <button class="chip" id="pPeuter" aria-pressed="false">Met Lotta</button>
+        <button class="chip" id="pNear" aria-pressed="false"><svg class="icon sm"><use href="#i-car"/></svg> ≤ 20 min</button>
+        <span class="chipdivider"></span>
+        <span id="catChips" style="display:contents"></span>
+        <span class="chipdivider"></span>
+        <button class="chip" id="moreBtn" aria-expanded="false" aria-controls="morePanel"><svg class="icon sm"><use href="#i-sliders"/></svg> Meer <span class="fbadge" id="fCount" hidden></span></button>
+      </div>
+      <div class="morefilters" id="morePanel" hidden>
+        <span class="lbl">Sorteer</span>
         <select id="sort" aria-label="Sorteren">
-          <option value="dist">Sorteer: dichtstbij</option>
-          <option value="date">Sorteer: op datum</option>
-          <option value="rating">Sorteer: best beoordeeld</option>
-          <option value="votes">Sorteer: meeste stemmen</option>
+          <option value="aanraders">Aanraders</option>
+          <option value="dist">Dichtstbij</option>
+          <option value="date">Op datum</option>
         </select>
-        <select id="maxdist" aria-label="Max afstand">
-          <option value="999">Afstand: alles</option>
-          <option value="15">≤ 15 km</option>
-          <option value="25">≤ 25 km</option>
-          <option value="45">≤ 45 km</option>
+        <span class="lbl">Afstand</span>
+        <select id="maxdist" aria-label="Max rijtijd">
+          <option value="999">Alles</option>
+          <option value="15">≤ 20 min</option>
+          <option value="25">≤ 30 min</option>
+          <option value="45">≤ 50 min</option>
         </select>
-        <button class="btn" id="addBtn">＋ Eigen plan</button>
-      </div>
-      <div class="row">
-        <span class="label">Voor wie geschikt</span>
-        <div class="chips" id="audChips">
-          <button class="chip" data-aud="peuter" aria-pressed="false">👶 Peuter (1½)</button>
-          <button class="chip" data-aud="kids" aria-pressed="false">🧒 Kids 7 &amp; 9</button>
-          <button class="chip" data-aud="ouders" aria-pressed="false">🧑 Ouders</button>
-        </div>
-      </div>
-      <div class="row">
-        <span class="label">Wie wil erheen</span>
-        <div class="chips" id="whoChips"></div>
-      </div>
-      <div class="row">
-        <span class="label">Soort</span>
-        <div class="chips" id="catChips"></div>
-        <span style="flex:1"></span>
-        <button class="chip" id="onlyPicked" aria-pressed="false">✓ Alleen geboekt</button>
+        <label class="toggle"><input type="checkbox" id="wholeSummer" /> Ook buiten ons verblijf</label>
+        <label class="toggle"><input type="checkbox" id="onlyPicked" /> Alleen geboekt</label>
+        <span class="lbl" style="margin-left:6px">Wil erheen:</span>
+        <span id="whoChips" style="display:contents"></span>
+        <button class="linklike" id="clearFilters"><svg class="icon sm"><use href="#i-reset"/></svg> Wis alles</button>
       </div>
     </div>
   </div>
 </div>
 
 <main class="wrap">
-  <div class="resultline" id="resultline"></div>
-  <div class="exportbar" id="exportbar">
-    <span class="exporthint">Jouw keuzes:</span>
-    <button class="xbtn" id="expIcs" title="Download geboekte items met datum als agenda-bestand">⤓ Agenda (.ics)</button>
-    <button class="xbtn" id="expMd" title="Kopieer je keuzes als lijst om te appen">⧉ Markdown</button>
-    <button class="xbtn" id="expShare" title="Kopieer een link die je keuzes én stemmen meeneemt">🔗 Deel-link</button>
-    <span class="exporthint" id="pickCount"></span>
-  </div>
-  <div class="grid" id="grid"></div>
-  <div id="map" hidden><div class="map-hint" id="mapHint">Gebruik twee vingers om de kaart te bewegen</div></div>
-  <div class="maptools" id="maptools" hidden>
-    <span class="maphint">Stippen staan op de dorpskern bij benadering — gebruik “Route ↗” in de popup voor navigatie.</span>
-    <a class="xbtn" id="gmapsAll" target="_blank" rel="noopener">🧭 Open omgeving in Google Maps</a>
-  </div>
-  <div class="legend" id="legend" hidden></div>
-  <div class="empty" id="empty" hidden>Niets gevonden met deze filters. Zet er eentje uit, of voeg een eigen plan toe.</div>
+  <!-- ============ Ontdek ============ -->
+  <section id="view-ontdek">
+    <section class="favs" id="favs" hidden>
+      <h2 class="sec"><svg class="icon lg" style="color:#D1495B;fill:#D1495B"><use href="#i-heart"/></svg> Onze favorieten</h2>
+      <p class="sec-sub">Waar het gezin het meest zin in heeft — tik op een kaartje om ernaartoe te gaan.</p>
+      <div class="favstrip" id="favstrip"></div>
+    </section>
+    <div class="resultline">
+      <span id="resultline"></span>
+      <span style="flex:1"></span>
+      <button class="btn accent" id="kidsBtn"><svg class="icon sm"><use href="#i-smile"/></svg> Kies maar!</button>
+      <button class="btn ghost" id="addBtn"><svg class="icon sm"><use href="#i-plus"/></svg> Eigen plan</button>
+    </div>
+    <div class="grid" id="grid"></div>
+    <div class="empty" id="empty" hidden>Niets gevonden met deze filters. Zet er eentje uit, of voeg een eigen plan toe.</div>
+    <div class="hiddenline" id="hiddenline" hidden></div>
+  </section>
+
+  <!-- ============ Kaart ============ -->
+  <section id="view-kaart" hidden>
+    <div id="map"><div class="map-hint" id="mapHint">Gebruik twee vingers om de kaart te bewegen</div></div>
+    <div class="maptools">
+      <span class="maphint">Stippen staan op de dorpskern bij benadering — gebruik "Route" in de popup voor navigatie.</span>
+      <a class="xbtn" id="gmapsAll" target="_blank" rel="noopener"><svg class="icon sm"><use href="#i-nav"/></svg> Open omgeving in Google Maps</a>
+    </div>
+    <div class="legend" id="legend"></div>
+  </section>
+
+  <!-- ============ Ons plan ============ -->
+  <section id="view-plan" hidden>
+    <div class="planhead">
+      <div>
+        <h2 class="sec">Ons plan — dag voor dag</h2>
+        <p class="sec-sub" style="margin:0">Geboekte en ingeplande uitjes per dag. Plan iets in via <svg class="icon sm"><use href="#i-cal-plus"/></svg> op een kaart.</p>
+      </div>
+      <span class="spacer"></span>
+      <div class="exportbar">
+        <button class="xbtn" id="expIcs" title="Zet geboekte en ingeplande uitjes in je telefoonagenda"><svg class="icon sm"><use href="#i-download"/></svg> Agenda (.ics)</button>
+        <button class="xbtn" id="expMd" title="Kopieer het plan als lijstje om te appen"><svg class="icon sm"><use href="#i-copy"/></svg> Kopieer lijstje</button>
+      </div>
+    </div>
+    <div class="pcard" id="doorlopend" style="margin-bottom:16px" hidden></div>
+    <div class="days" id="days"></div>
+  </section>
 </main>
 
+<!-- ============ Praktisch ============ -->
+<section class="praktisch">
+  <div class="wrap">
+    <h2 class="sec">Praktisch</h2>
+    <p class="sec-sub">Alles wat je ter plekke nodig hebt.</p>
+    <div class="pgrid">
+      <div class="pcard">
+        <h4><svg class="icon sm"><use href="#i-phone"/></svg> Reserveren &amp; info</h4>
+        Veel activiteiten van het zomerprogramma vereisen inschrijving.<br/>
+        Office de Tourisme: <a href="tel:+33388004039">03 88 00 40 39</a><br/>
+        <a href="mailto:tourisme@alsace-bossue.net">tourisme@alsace-bossue.net</a><br/>
+        Grange aux Paysages: <a href="tel:+33388005555">03 88 00 55 55</a><br/>
+        Agenda: <a href="https://www.alsace-bossue.net/agenda-complet.html" target="_blank" rel="noopener">alsace-bossue.net</a>
+      </div>
+      <div class="pcard">
+        <h4><svg class="icon sm"><use href="#i-pin"/></svg> Markt &amp; vers</h4>
+        Wekelijkse markt in Saverne op <b>donderdagochtend</b> (Place du Général-de-Gaulle). Kleine dorpsfeesten worden vaak laat aangekondigd — kijk vlak voor vertrek op de <a href="https://www.alsace-bossue.net/agenda-complet.html" target="_blank" rel="noopener">CCAB-agenda</a>.
+      </div>
+      <div class="pcard">
+        <h4><svg class="icon sm"><use href="#i-alert"/></svg> Noodnummers</h4>
+        <ul>
+          <li><b>112</b> — algemeen noodnummer</li>
+          <li><b>15</b> — ambulance (SAMU)</li>
+          <li><b>17</b> — politie · <b>18</b> — brandweer</li>
+          <li><b>3237</b> — apotheek-wachtdienst</li>
+        </ul>
+      </div>
+      <div class="pcard">
+        <h4><svg class="icon sm"><use href="#i-check"/></svg> Nog checken</h4>
+        De exacte data van het CCAB-zomerprogramma worden pas in juni/juli definitief — bevestig per activiteit via de Info-link. Items met <svg class="icon sm" style="color:var(--feest)"><use href="#i-alert"/></svg> zijn nog niet geverifieerd.
+      </div>
+    </div>
+    <div class="phrases">
+      <h2 class="sec" style="font-size:20px">🇫🇷 Even Frans</h2>
+      <p class="sec-sub">De zinnen die je écht gaat gebruiken — tik op kopiëren en laat je telefoon 'm desnoods voorlezen.</p>
+      <div id="phraseList"></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    Gemaakt voor onze zomer in Schœnbourg · foto's via <a href="img/ATTRIBUTION.md">Wikimedia Commons (verantwoording)</a> · kaart: © OpenStreetMap · CARTO · Esri
+  </div>
+</footer>
+
+<!-- Bottom-tabs (mobiel) -->
+<nav class="bottomnav" aria-label="Weergave">
+  <button data-view="ontdek" aria-pressed="true"><svg class="icon lg"><use href="#i-list"/></svg> Ontdek</button>
+  <button data-view="kaart" aria-pressed="false"><svg class="icon lg"><use href="#i-map"/></svg> Kaart</button>
+  <button data-view="plan" aria-pressed="false"><svg class="icon lg"><use href="#i-cal"/></svg> Ons plan</button>
+</nav>
+
+<!-- Eigen plan -->
 <dialog id="addDlg">
   <form method="dialog" class="dlg" id="addForm">
     <h2>Eigen plan toevoegen</h2>
@@ -351,617 +260,31 @@
   </form>
 </dialog>
 
-<footer>
-  <div class="wrap cols">
-    <div>
-      <h4>Reserveren &amp; info</h4>
-      Veel CCAB-activiteiten vereisen inschrijving.<br/>
-      Office de Tourisme: <a href="tel:+33388004039">03 88 00 40 39</a> · <a href="mailto:tourisme@alsace-bossue.net">tourisme@alsace-bossue.net</a><br/>
-      Grange aux Paysages: <a href="tel:+33388005555">03 88 00 55 55</a><br/>
-      Agenda: <a href="https://www.alsace-bossue.net/agenda-complet.html" target="_blank" rel="noopener">alsace-bossue.net</a>
-    </div>
-    <div>
-      <h4>Wie wil erheen?</h4>
-      Onder elke kaart tikt iedereen zijn eigen bolletje aan — <b>Alma, Freija, Marloes, Tom &amp; Lotta</b>. Filter op persoon via “Wie wil erheen”, en je stemmen reizen mee in de <b>Deel-link</b>, zodat je makkelijk samen kiest.
-    </div>
-    <div>
-      <h4>Nog checken</h4>
-      Wekelijkse markt Saverne is op <b>donderdagochtend</b> (Place du Général-de-Gaulle). Kleine dorpsfeesten worden vaak laat aangekondigd — kijk vlak voor vertrek op <a href="https://www.alsace-bossue.net/agenda-complet.html" target="_blank" rel="noopener">de CCAB-agenda</a>. De exacte data van het CCAB-zomerprogramma worden pas in juni/juli definitief; bevestig per activiteit via de Info-link.
-    </div>
-    <div>
-      <h4>Kaart &amp; delen</h4>
-      De kaart heeft een <b>Kaart/Satelliet</b>-schakelaar; “Route ↗” en “Open in Google Maps” brengen je naar de echte Google Maps-navigatie. Met <b>Deel-link</b> stuur je je keuzes en stemmen naar de rest — ze zitten in de URL, dus geen account nodig. <b>Agenda (.ics)</b> zet alles met een datum in je telefoonagenda.
-    </div>
+<!-- Inplannen op dag -->
+<dialog id="dayDlg">
+  <div class="dlg">
+    <h2>Plan in</h2>
+    <p class="note" id="dayDlgTitle"></p>
+    <div class="daypick" id="dayPick"></div>
+    <div class="dlg-actions"><button class="btn ghost" id="dayCancel">Annuleren</button></div>
   </div>
-</footer>
+</dialog>
+
+<!-- Kids-stemmodus -->
+<div class="kids" id="kids" hidden role="dialog" aria-modal="true" aria-label="Kies maar!">
+  <div class="khead">
+    <span class="progress" id="kProgress"></span>
+    <span class="spacer"></span>
+    <button class="iconbtn" id="kClose" aria-label="Sluiten"><svg class="icon"><use href="#i-x"/></svg></button>
+  </div>
+  <div class="kbody" id="kBody"></div>
+</div>
 
 <div class="toast" id="toast" hidden></div>
 
-<script src="vendor/leaflet/leaflet.js"></script>
-<script>
-/* =========================================================================
-   DATA — voeg hier simpel nieuwe activiteiten toe (of via de knop ＋Eigen plan)
-   Velden:
-     id, title, what, town, dist(km, ~), category, tags:['peuter','kids','ouders'],
-     coords:[lat,lon]  // optioneel: exacte pin-plek; anders dorpskern (COORDS[town])
-     env: 'buiten' | 'binnen' | 'beide',   // voor de regendag-filter
-     dates: null (altijd) | ['2026-07-22',...] | {from:'…',to:'…'},
-     whenLabel, rating(0-5|null), price, book, url(info), img(null|pad/URL),
-     verify: true → toont 'te verifiëren'-label,
-     source: 'ccab' (lokaal programma) | 'web' (omgeving)
-   Categorieën: natuur · dieren · water · erfgoed · feest · actief
-   Alle url's zijn geverifieerde, werkende officiële pagina's (juni 2026).
-   ========================================================================= */
-const HOME = "27 Rue Lot. Waldmatt, 67320 Schœnbourg, France";
-const AGENDA = "https://www.alsace-bossue.net/agenda-complet.html";
-
-/* Gezinsleden — voor de 'wie wil erheen'-stemknoppen */
-const PEOPLE = {
-  alma:    {name:"Alma",    color:"#D1495B"},
-  freija:  {name:"Freija",  color:"#E8871E"},
-  marloes: {name:"Marloes", color:"#7A5195"},
-  tom:     {name:"Tom",     color:"#2A7DE1"},
-  lotta:   {name:"Lotta",   color:"#3E9B6D"},
-};
-
-const CATS = {
-  natuur:{label:"Natuur",  color:"#3E7A4E", emoji:"🌲"},
-  dieren:{label:"Dieren & boerderij", color:"#D98E2B", emoji:"🐐"},
-  water: {label:"Water & varen", color:"#2C6E8F", emoji:"🛶"},
-  erfgoed:{label:"Erfgoed & cultuur", color:"#6E3B55", emoji:"🏛️"},
-  feest: {label:"Feest & spektakel", color:"#B85C4A", emoji:"🎪"},
-  actief:{label:"Actief", color:"#2E7D74", emoji:"🚲"},
-};
-
-/* Dorpskern-coördinaten (bij benadering) voor de kaartweergave */
-const COORDS = {
-  "Schœnbourg":[48.8292222,7.2654444],   /* exacte locatie verblijf: 48°49'45.2"N 7°15'55.6"E */
-  "Rhodes":[48.7560,6.9450],
-  "Kintzheim":[48.2569,7.3950],
-  "La Petite-Pierre":[48.8589,7.3175],
-  "Saverne":[48.7411,7.3625],
-  "Arzviller":[48.7131,7.2272],
-  "Sarrebourg":[48.7372,7.0553],
-  "Drulingen":[48.8658,7.1819],
-  "Sarrewerden":[48.9169,7.0731],
-  "Altwiller":[48.9258,6.9969],
-  "Dehlingen":[48.9719,7.1622],
-  "Lorentzen":[48.9669,7.1311],
-  "Berg":[48.8806,7.2206],
-  "Hirschland":[48.9011,7.1664],
-  "Harskirchen":[48.9169,7.0181],
-  "Mackwiller":[48.9511,7.1431],
-  "Wolfskirchen":[48.9011,7.0875],
-  "Sarre-Union":[48.9389,7.0900],
-  "Steinbourg":[48.7567,7.4042],
-  "Schiltigheim":[48.6075,7.7508],
-  "Alsace Bossue":[48.8800,7.1400],
-  "Voellerdingen":[48.9122,7.0881],
-  "Ratzwiller":[48.9028,7.1328],
-  "Lembach":[49.0064,7.7664],
-  "Strasbourg":[48.5839,7.7455],
-  "Orschwiller":[48.2494,7.3444],
-  "Hunawihr":[48.1761,7.3019],
-  "Lichtenberg":[48.9214,7.4869],
-  "Wingen-sur-Moder":[48.9169,7.3831],
-  "Philippsbourg":[48.9861,7.6531],
-  "Bitche":[49.0522,7.4283],
-  "Oberhaslach":[48.5853,7.3161],
-};
-
-const ACTIVITIES = [
-  /* ---- Omgeving / grotere attracties (web) ---- */
-  {id:"saintecroix", title:"Parc animalier de Sainte-Croix", what:"130 ha natuurpark met Europese fauna, ~1.500 dieren in halve vrijheid. Topper, reken op een hele dag.", town:"Rhodes", dist:40, category:"dieren", tags:["peuter","kids","ouders"], env:"buiten", dates:null, rating:4.6, price:"€€", url:"https://parcsaintecroix.com", img:null, source:"web"},
-  {id:"kintzheim", title:"Cigoland + Volerie des Aigles + Montagne des Singes", what:"Ooievaarpark met attracties, roofvogelshow en apenberg, dicht bij elkaar. Ver — maak er een dagtrip van.", town:"Kintzheim", dist:90, category:"dieren", tags:["kids","ouders"], env:"buiten", dates:null, rating:4.6, price:"€€", url:"https://cigoland.fr", img:null, source:"web"},
-  {id:"petitepierre", title:"La Petite-Pierre & Vosges du Nord", what:"Vestingdorp met bos, makkelijke wandelingen en speeltuinen. Kinderwagen-vriendelijk op verharde paden.", town:"La Petite-Pierre", dist:18, category:"natuur", tags:["peuter","kids","ouders"], env:"beide", dates:null, rating:4.5, price:"gratis", url:"https://tourisme.hanau-lapetitepierre.alsace", img:null, source:"web"},
-  {id:"rohan", title:"Château des Rohan & centrum Saverne", what:"Kasteel ('klein Versailles'), vakwerkhuizen en rozentuin (~8.500 rozen). Kort en kindvriendelijk.", town:"Saverne", dist:20, category:"erfgoed", tags:["kids","ouders"], env:"beide", dates:null, rating:4.1, price:"€", url:"https://www.tourisme-saverne.fr", img:null, source:"web"},
-  {id:"hautbarr", title:"Château du Haut-Barr", what:"Kasteelruïne op rotsen ('het oog van de Elzas'), mooi uitzicht. ~1,5 km door het bos — draagzak voor de jongste.", town:"Saverne", dist:21, category:"erfgoed", tags:["kids","ouders"], env:"buiten", dates:null, rating:4.5, price:"gratis", url:"https://www.tourisme-saverne.fr", img:null, source:"web"},
-  {id:"oceanide", title:"Centre nautique L'Océanide", what:"Binnen- en buitenbad met peuterbad. Handig op een warme dag.", town:"Saverne", dist:20, category:"water", tags:["peuter","kids","ouders"], env:"beide", dates:null, rating:3.8, price:"€", url:"https://www.cc-saverne.fr", img:null, source:"web"},
-  {id:"botanique", title:"Jardin botanique du col de Saverne", what:"Botanische tuin / arboretum van 2,5 ha. Rustig en mooi, dagelijks open mei–aug.", town:"Saverne", dist:22, category:"natuur", tags:["kids","ouders"], env:"buiten", dates:null, rating:4.0, price:"€", url:"https://www.jardin-botanique-saverne.org", img:null, source:"web"},
-  {id:"planincline", title:"Plan Incliné de Saint-Louis-Arzviller", what:"Unieke scheepslift in Europa (44 m) + museum. Korte rondleiding ideaal; boottocht ook mogelijk via dezelfde uitbater.", town:"Arzviller", dist:35, category:"actief", tags:["kids","ouders"], env:"buiten", dates:null, rating:4.5, price:"€€", url:"https://www.plan-incline.com", img:null, source:"web"},
-  {id:"sarrebourg", title:"Plan d'eau de Sarrebourg (Étang Lévêque)", what:"Recreatiemeer met strandje, zwemvijver en picknick. Fijn voor warme dagen.", town:"Sarrebourg", dist:30, category:"water", tags:["peuter","kids","ouders"], env:"buiten", dates:null, rating:4.0, price:"gratis", url:"https://www.tourisme-sarrebourg.fr/fr/base-de-loisirs", img:null, source:"web"},
-
-  /* ---- Verder weg — dagtripjes de moeite waard (web) ---- */
-  {id:"fleckenstein", title:"Château de Fleckenstein & P'tit Fleck", what:"Spectaculaire rotsburcht in het noordelijke Vosges-woud. Met het speelse ontdekkingsparcours 'P'tit Fleck' en het openluchtspel 'Le Château des Défis' een topper voor kinderen.", town:"Lembach", dist:48, category:"erfgoed", tags:["kids","ouders"], env:"buiten", dates:null, rating:4.5, price:"€€", url:"https://www.fleckenstein.fr", img:null, source:"web"},
-  {id:"vaisseau", title:"Le Vaisseau (kinder-sciencemuseum)", what:"Interactief sciencemuseum in Straatsburg waar alles draait om zelf doen en ontdekken. Ideaal voor een regendag, leuk vanaf ~3 jaar.", town:"Strasbourg", dist:55, category:"erfgoed", tags:["peuter","kids","ouders"], env:"binnen", dates:null, rating:4.6, price:"€€", url:"https://www.levaisseau.com", img:null, source:"web"},
-  {id:"orangerie", title:"Parc de l'Orangerie (Straatsburg)", what:"Gratis stadspark met ooievaars, een mini-boerderij, speeltuinen, bootjes en een meertje. Perfect te combineren met de binnenstad.", town:"Strasbourg", dist:55, category:"natuur", tags:["peuter","kids","ouders"], env:"buiten", dates:null, rating:4.6, price:"gratis", url:"https://www.strasbourg.eu", img:null, source:"web"},
-  {id:"strasbourg", title:"Straatsburg: Grande Île & boottocht", what:"Unesco-binnenstad met de kathedraal (astronomisch uurwerk), Petite France en een Batorama-boottocht over de Ill. Grote dagtrip, maar de moeite waard.", town:"Strasbourg", dist:55, category:"erfgoed", tags:["kids","ouders"], env:"beide", dates:null, rating:4.7, price:"€€", url:"https://www.batorama.com", img:null, source:"web"},
-  {id:"hautkoenigsbourg", title:"Château du Haut-Kœnigsbourg", what:"Volledig herbouwd middeleeuws kasteel op 750 m met weids uitzicht over de Elzasvlakte. Indrukwekkend voor jong en oud; combineer eventueel met Kintzheim.", town:"Orschwiller", dist:82, category:"erfgoed", tags:["kids","ouders"], env:"beide", dates:null, rating:4.5, price:"€", url:"https://www.haut-koenigsbourg.fr", img:null, source:"web"},
-  {id:"naturoparc", title:"Naturoparc Hunawihr (ooievaars & otters)", what:"Reservaat met ooievaars, otters, bevers en aalscholvers — inclusief een visshow. Klein, groen en heel toegankelijk met een kinderwagen.", town:"Hunawihr", dist:75, category:"dieren", tags:["peuter","kids","ouders"], env:"buiten", dates:null, rating:4.4, price:"€€", url:"https://www.naturoparc.fr", img:null, source:"web"},
-  {id:"lichtenberg", title:"Château de Lichtenberg", what:"Vestingkasteel met een verrassende moderne staal-en-glas-inbouw, tentoonstellingen en zomerevenementen. Mooi uitzicht en relatief dichtbij.", town:"Lichtenberg", dist:22, category:"erfgoed", tags:["kids","ouders"], env:"beide", dates:null, rating:4.3, price:"€", url:"https://www.chateaudelichtenberg.com", img:null, source:"web"},
-  {id:"lalique", title:"Musée Lalique", what:"Sfeervol glasmuseum in Wingen-sur-Moder, in het hart van de Vosges du Nord. Rustig en mooi; vooral voor de ouders en de oudere kids.", town:"Wingen-sur-Moder", dist:25, category:"erfgoed", tags:["kids","ouders"], env:"binnen", dates:null, rating:4.4, price:"€", url:"https://www.musee-lalique.com", img:null, source:"web"},
-  {id:"hanau", title:"Étang de Hanau (zwemmeer)", what:"Bewaakt zwemmeer met strandje midden in het bos van de Vosges du Nord — zwemmen, waterfietsen en picknick. Fijn op een hete dag.", town:"Philippsbourg", dist:38, category:"water", tags:["peuter","kids","ouders"], env:"buiten", dates:null, rating:4.2, price:"€", url:"https://www.parc-vosges-nord.fr", img:null, source:"web", verify:true},
-  {id:"bitche", title:"Citadelle de Bitche", what:"Imposante 18e-eeuwse vestingstad met een audiogeleide route door de ondergrondse gangen. Even rijden, maar bijzonder.", town:"Bitche", dist:42, category:"erfgoed", tags:["kids","ouders"], env:"beide", dates:null, rating:4.4, price:"€€", url:"https://www.citadelle-bitche.com", img:null, source:"web"},
-  {id:"nideck", title:"Cascade & château du Nideck", what:"Bekende waterval met kasteelruïne en uitzichtpunt in het Bruche-woud. Pittige boswandeling (~1,5–2u) — stevige schoenen aan.", town:"Oberhaslach", dist:45, category:"natuur", tags:["kids","ouders"], env:"buiten", dates:null, rating:4.5, price:"gratis", url:"https://www.valleedelabruche.fr", img:null, source:"web", verify:true},
-
-  /* ---- CCAB-zomerprogramma, BINNEN het verblijf (18–31 juli) ---- */
-  {id:"animtarue", title:"Anim'ta rue", what:"Rondreizende zomeranimatie met 15 namiddagen gratis activiteiten in de Alsace Bossue: houten spellen, knutsel- en kunstactiviteiten, circus- en muziekworkshops. Geen reservering nodig.", town:"Alsace Bossue", dist:8, category:"feest", tags:["peuter","kids","ouders"], env:"buiten", dates:{from:"2026-07-13",to:"2026-07-31"}, whenLabel:"13–31 jul · 14–18u", rating:null, price:"gratis", book:null, url:AGENDA, img:"img/animtarue.jpg", source:"ccab"},
-  {id:"saxs", title:"Concert pique-nique Saxs'Union", what:"Breng je picknick mee en strijk neer aan de oever van de Isch-brug. Bij het zachte geluid van de rivier klinken de saxofoons van ensemble Saxs'Union voor een feestelijk concert in het idyllische kader van Wolfskirchen. Drank en kleine hapjes ter plaatse. Bij slecht weer → 25/7.", town:"Wolfskirchen", dist:7, category:"feest", tags:["kids","ouders"], env:"buiten", dates:["2026-07-18"], whenLabel:"za 18 jul · 19u30", rating:null, price:"gratis", book:null, url:AGENDA, img:null, source:"ccab"},
-  {id:"helici19", title:"Ferme hélicicole (slakkenboerderij)", what:"Slakkenkwekerij + Limousin-koeien, eindigt met proeverij.", town:"Hirschland", dist:6, category:"dieren", tags:["kids","ouders"], env:"buiten", dates:["2026-07-19"], whenLabel:"zo 19 jul · 10u30", rating:null, price:"€4,50", book:"OT reserveren", url:AGENDA, img:null, source:"ccab"},
-  {id:"kirchberg", title:"Après-midi Chapelle du Kirchberg", what:"Kapelletje op een van de hoogste punten van de Alsace Bossue, met wandelingen en prachtig panorama over dorpen en boomgaarden. Elke zondag: bar vanaf 14u, eten (flammkuchen, knackworst) vanaf 17u. Reserveren aanbevolen.", town:"Berg", dist:6, category:"natuur", tags:["kids","ouders"], env:"buiten", dates:["2026-07-19","2026-07-26"], whenLabel:"zo 19 & 26 jul · v.a. 14u", rating:null, price:"gratis", book:null, url:AGENDA, img:"img/kirchberg.jpg", source:"ccab"},
-  {id:"escape", title:"Escape Game in het kasteelpark", what:"Vind de schat van de oude tuinier. Voor de grote twee.", town:"Lorentzen", dist:8, category:"actief", tags:["kids"], env:"buiten", dates:["2026-07-20"], whenLabel:"ma 20 jul · 9–11u", rating:null, price:"gratis", book:"GAP 03 88 00 55 55", url:"https://www.grangeauxpaysages.fr", img:null, source:"ccab"},
-  {id:"yogapero", title:"Yoga-Péro", what:"Yoga + aperitief op de Kirchberg. Iets voor de ouders (vanaf 10 jr).", town:"Berg", dist:6, category:"natuur", tags:["ouders"], env:"buiten", dates:["2026-07-21","2026-07-28"], whenLabel:"di 21 & 28 jul · 18u45", rating:null, price:"vrije gift", book:null, url:AGENDA, img:null, source:"ccab"},
-  {id:"toutptits", title:"Tout P'tits Nature", what:"Ochtend voelen/ontdekken in de natuur — speciaal voor 1–3 jaar. Ideaal voor de jongste.", town:"Lorentzen", dist:8, category:"natuur", tags:["peuter"], env:"buiten", dates:["2026-07-22"], whenLabel:"wo 22 jul · 10–11u", rating:null, price:"gratis", book:"GAP 03 88 00 55 55", url:"https://www.grangeauxpaysages.fr", img:null, source:"ccab"},
-  {id:"petitsheros", title:"Voorlezen: Mes petits héros", what:"Verhaaltjes voor de allerkleinsten (0–3 jr) in de médiathèque.", town:"Sarre-Union", dist:12, category:"erfgoed", tags:["peuter"], env:"binnen", dates:["2026-07-22"], whenLabel:"wo 22 jul · 11–11u30", rating:null, price:"gratis", book:null, url:AGENDA, img:null, source:"ccab"},
-  {id:"petitspaysans", title:"Après-midi petits paysans", what:"Onderdompeling op de boerderij (Les Amis'Nimaux) met rondleiding, educatieve workshops en contact met de dieren. Kinderen ontdekken de landbouwwereld op speelse wijze — eindigt met een gezellig boerentussendoortje met lokale producten.", town:"Harskirchen", dist:12, category:"dieren", tags:["peuter","kids"], env:"buiten", dates:["2026-07-22"], whenLabel:"wo 22 jul · 14–16u", rating:null, price:"€12/kind · €3/volw", book:"OT reserveren", url:AGENDA, img:"img/petitspaysans.jpg", source:"ccab"},
-  {id:"thermes", title:"Romeinse thermen van Mackwiller", what:"Een archeoloog en een 'Romein' vertellen over de baden in de oudheid.", town:"Mackwiller", dist:8, category:"erfgoed", tags:["kids","ouders"], env:"buiten", dates:["2026-07-22"], whenLabel:"wo 22 jul · 18–19u", rating:null, price:"gratis", book:"OT reserveren", url:"https://www.cip-lavilla.fr", img:null, source:"ccab"},
-  {id:"pilatre", title:"Wandeling Pilâtre de Rozier-circuit", what:"Begeleide wandeling (3u) vanuit Voellerdingen: door natuur en herinnering naar het gedenkteken voor de crash van het luchtschip 'Pilâtre de Rozier' (1917) in de vallei van de Eichel. Lunch mogelijk in de molen. Wandelschoenen verplicht.", town:"Voellerdingen", dist:12, category:"natuur", tags:["kids","ouders"], env:"buiten", dates:["2026-07-22"], whenLabel:"wo 22 jul · 9–12u", rating:null, price:"gratis", book:"OT 03 88 00 40 39", url:AGENDA, img:"img/pilatre.jpg", source:"ccab"},
-  {id:"clubarcheo", title:"Club archéo (meegraven)", what:"Troffel in de hand: maak kennis met de archeologie door deel te nemen aan een of meer opgravingsdagen bij de Romeinse villa van de Gurtelbach, samen met professionele archeologen.", town:"Dehlingen", dist:12, category:"erfgoed", tags:["kids"], env:"buiten", dates:["2026-07-23","2026-07-30"], whenLabel:"do 23 & 30 jul · 11–16u30", rating:null, price:"—", book:"OT reserveren", url:"https://www.cip-lavilla.fr", img:"img/clubarcheo.jpg", source:"ccab"},
-  {id:"opinel", title:"Opinel et bout de ficelle", what:"Natuurspeelgoed maken in een Natura 2000-gebied.", town:"Sarre-Union", dist:12, category:"natuur", tags:["kids"], env:"buiten", dates:["2026-07-24"], whenLabel:"vr 24 jul · 14–17u", rating:null, price:"gratis", book:"GAP 03 88 00 55 55", url:"https://www.grangeauxpaysages.fr", img:null, source:"ccab"},
-  {id:"percollons", title:"Circus: Percollons-nous", what:"Acrobatiek onder de tent (Les Branques Associés). Vanaf 3 jaar. Onder de tent — ook bij regen.", town:"Drulingen", dist:5, category:"feest", tags:["kids","ouders"], env:"binnen", dates:["2026-07-24","2026-07-25","2026-07-26","2026-07-31"], whenLabel:"24–26 & 31 jul · avond", rating:null, price:"€5–15", book:"sms 06 10 43 08 55", url:AGENDA, img:null, source:"ccab"},
-  {id:"rcvliegtuig", title:"NK/EK radiografische kunstvliegtuigen", what:"Een groot stuntvliegconcours + spectaculaire nachtshow (za 25, 18–23u). Bevestig data via de agenda.", town:"Sarre-Union", dist:12, category:"feest", tags:["kids","ouders"], env:"buiten", dates:{from:"2026-07-24",to:"2026-07-26"}, whenLabel:"24–26 jul · 9–18u", rating:null, price:"gratis", book:null, url:AGENDA, img:null, source:"ccab", verify:true},
-  {id:"lederbewerking", title:"Ontdek de lederbewerking", what:"Duw de deur van het atelier open bij Delphine in Altwiller: ontdek en voel de leersoorten en leer de eeuwenoude technieken voor het maken van lederwaren. Vanaf 12 jaar.", town:"Altwiller", dist:14, category:"erfgoed", tags:["ouders"], env:"binnen", dates:["2026-07-25"], whenLabel:"za 25 jul · 15u", rating:null, price:"€4/persoon", book:"OT 03 88 00 40 39", url:AGENDA, img:"img/lederbewerking.jpg", source:"ccab"},
-  {id:"rencontre", title:"Rencontre romaine (re-enactment)", what:"Re-enactors laten het Romeinse leven zien op de archeosite. Vrij toegankelijk.", town:"Dehlingen", dist:12, category:"erfgoed", tags:["kids","ouders"], env:"buiten", dates:["2026-07-26"], whenLabel:"zo 26 jul · 13u30–17u30", rating:null, price:"gratis", book:null, url:"https://www.cip-lavilla.fr", img:null, source:"ccab"},
-  {id:"diepetiid", title:"Wandeling door de diepe tijd", what:"Begeleide en vertelde wandeling van 4,6 km: herleef de 4,6 miljard jaar geschiedenis van de Aarde met haltes bij de sleutelmomenten in de evolutie. Kadert het rijke erfgoed van de mensheid en geeft inzicht in de verbondenheid van alle levensvormen. Voor volwassenen.", town:"Ratzwiller", dist:10, category:"natuur", tags:["ouders"], env:"buiten", dates:["2026-07-29"], whenLabel:"wo 29 jul · 9–12u30", rating:null, price:"vrije bijdrage", book:"www.hoplatransition.org", url:AGENDA, img:null, source:"ccab"},
-  {id:"gouter", title:"Cuisine ton goûter romain", what:"Zintuigenspel in de gallo-Romeinse tuin, daarna je eigen Romeinse snack maken.", town:"Dehlingen", dist:12, category:"erfgoed", tags:["kids"], env:"beide", dates:["2026-07-29"], whenLabel:"wo 29 jul · 14–17u", rating:null, price:"€5", book:"OT reserveren", url:"https://www.cip-lavilla.fr", img:null, source:"ccab"},
-  {id:"powwow", title:"Festival Pow Wow", what:"Noord-Amerikaanse indianencultuur: dans, kamp, kostuums. Erg leuk voor kinderen. (Valt net na vertrek.)", town:"Steinbourg", dist:18, category:"feest", tags:["kids","ouders"], env:"buiten", dates:{from:"2026-07-31",to:"2026-08-02"}, whenLabel:"31 jul–2 aug", rating:null, price:"—", book:null, url:"https://www.festivalpowwow.com", img:null, source:"web"},
-  {id:"alpagas", title:"Festival Les Alpagas Bleus", what:"Muziek/cultuur in het kasteelpark van Saverne. Loopt af op jullie aankomstdag.", town:"Saverne", dist:20, category:"feest", tags:["kids","ouders"], env:"buiten", dates:{from:"2026-07-16",to:"2026-07-18"}, whenLabel:"t/m za 18 jul", rating:null, price:"—", book:null, url:"https://www.festival-lesalpagasbleus.fr", img:null, source:"web"},
-  {id:"biere", title:"Fête de la Bière", what:"Bierfeest in Schiltigheim. Vooral voor de ouders. (Valt net na vertrek.)", town:"Schiltigheim", dist:50, category:"feest", tags:["ouders"], env:"buiten", dates:{from:"2026-07-31",to:"2026-08-03"}, whenLabel:"31 jul–3 aug", rating:null, price:"—", book:null, url:"https://www.ville-schiltigheim.fr/culture-sports-et-loisirs/grands-evenements/fete-de-la-biere-et-braderie-de-lucas/", img:null, source:"web"},
-
-  /* ---- CCAB — de hele zomer beschikbaar (op afspraak) ---- */
-  {id:"velorail", title:"Vélorail du Pays Secret", what:"Beleef de bijzondere railfiets-ervaring! Aan boord van een voertuig voor 4 personen (elektrisch of standaard) leg je bijna 14 km af tussen heuvels en bossen, op het pad van de ooievaars.", town:"Drulingen", coords:[48.8659843,7.1866897], dist:5, category:"actief", tags:["kids","ouders"], env:"buiten", dates:null, whenLabel:"hele zomer · reserveren", rating:null, price:"€€", book:"07 66 49 29 09", url:"https://lesvelorailsdugrandest.fr/vallee-du-pays-secret/", img:"img/velorail.jpg", source:"ccab"},
-  {id:"barque", title:"Balade en barque op de Sarre", what:"Stap aan boord en laat je wiegen door de zachte stroming van de Saar, terwijl je geniet van de rijke fauna en flora langs de oevers.", town:"Sarrewerden", dist:12, category:"water", tags:["kids","ouders"], env:"buiten", dates:null, whenLabel:"jul–sep · reserveren", rating:null, price:"€", book:"OT 03 88 00 40 39", url:"https://www.alsace-bossue.net/decouvrir/incontournables1.html?titre=decouverte-de-la-sarre-en-barques&fiche=270004751", img:"img/barque.jpg", source:"ccab"},
-  {id:"chevalpark", title:"Parc Nature de Cheval", what:"Beleef een onvergetelijk moment met de paardenshow 'Les terres oubliées'. Doorkruis in een middeleeuws-fantastische wereld de thematische wijken — leerzaam en vermakelijk voor het hele gezin.", town:"Altwiller", dist:14, category:"dieren", tags:["kids","ouders"], env:"buiten", dates:null, whenLabel:"hele zomer · check tijden", rating:null, price:"€€", book:"03 88 01 45 21", url:"https://www.parc-naturedecheval.fr", img:"img/chevalpark.jpg", source:"ccab"},
-  {id:"randoland", title:"Randoland & Géocaching", what:"Speelse speurtochten met raadselboekjes (Lorentzen, Dehlingen, Diemeringen) voor 4–12 jr + geocaching. Een mix van rally en oriëntatieloop — verrassende en ludieke ontdekkingen voor het hele gezin.", town:"Alsace Bossue", dist:5, category:"natuur", tags:["peuter","kids","ouders"], env:"buiten", dates:null, whenLabel:"hele zomer · materiaal bij OT", rating:null, price:"gratis/€", book:null, url:"https://www.alsace-bossue.net", img:"img/randoland.jpg", source:"ccab"},
-  {id:"musee", title:"Musée La Villa + Romeinse villa Gurtelbach", what:"In het museum ontdek je de methoden van de archeologie en het dagelijks leven in de Alsace Bossue in de Romeinse tijd. Op de site van de Gurtelbach duik je in het verleden met augmented reality.", town:"Dehlingen", dist:12, category:"erfgoed", tags:["kids","ouders"], env:"beide", dates:null, whenLabel:"hele zomer · check openingstijden", rating:null, price:"€", book:null, url:"https://www.cip-lavilla.fr", img:"img/musee.jpg", source:"ccab"},
-  {id:"poney", title:"Pony-tochtjes (Écurie de Beltane)", what:"Begeleide ponytochtjes door velden en boomgaarden. Geen eigen website — data/plek via OT.", town:"Dehlingen", dist:12, category:"dieren", tags:["kids"], env:"buiten", dates:null, whenLabel:"regelmatig · reserveren", rating:null, price:"€20/kind", book:"06 71 09 33 41", url:AGENDA, img:null, source:"ccab", verify:true},
-
-  /* ---- Exposities (lopen je hele verblijf, gratis tenzij anders) ---- */
-  {id:"vuesduciel", title:"Expo: Vues du ciel", what:"Fotowerk van Kris Le Jeune en Estelle Wasbauer: een reflectie over het herontdekken van traagheid en verbeelding, met wolken en de schoonheid van de hemel als thema. Gratis tijdens openingsuren OT.", town:"Lorentzen", dist:8, category:"erfgoed", tags:["kids","ouders"], env:"binnen", dates:{from:"2026-05-26",to:"2026-09-05"}, whenLabel:"t/m 5 sep · gratis", rating:null, price:"gratis", book:null, url:"https://www.alsace-bossue.net", img:"img/vuesduciel.jpg", source:"ccab"},
-  {id:"fragment", title:"Expo: Fragment", what:"Een rondtrekkende container neemt je mee op reis door de grote historische tijdperken. Vijf archeologische objecten, op interactieve en vernieuwende wijze tentoongesteld, vertellen over de leefwijzen die de streek hebben gevormd.", town:"Alsace Bossue", dist:8, category:"erfgoed", tags:["kids","ouders"], env:"binnen", dates:{from:"2026-07-01",to:"2026-08-31"}, whenLabel:"t/m 31 aug · gratis", rating:null, price:"gratis", book:null, url:"https://www.cip-lavilla.fr", img:"img/fragment.jpg", source:"ccab"},
-  {id:"vasa", title:"Expo: Vasa et sapores", what:"Samenwerking tussen beeldend kunstenaar Zoé Joliclercq en culinair ontwerper Danaé Viney: landschapsborden geïnspireerd op de Gallo-Romeinse tijd, waar gebaren, kunst en keuken op subtiele wijze in dialoog gaan.", town:"Dehlingen", dist:12, category:"erfgoed", tags:["kids","ouders"], env:"binnen", dates:{from:"2026-07-01",to:"2026-08-31"}, whenLabel:"t/m 31 aug · 14–17u30", rating:null, price:"bij entree", book:null, url:"https://www.cip-lavilla.fr", img:"img/vasa.jpg", source:"ccab"},
-
-  /* ---- Zelf checken ---- */
-  {id:"marktsaverne", title:"Wekelijkse markt Saverne", what:"Laagdrempelig uitje op donderdagochtend (Place du Général-de-Gaulle).", town:"Saverne", dist:20, category:"feest", tags:["peuter","kids","ouders"], env:"buiten", dates:null, whenLabel:"do-ochtend · wekelijks", rating:null, price:"gratis", book:null, url:"https://www.saverne.fr/notre-ville/foires-et-marches/", img:null, source:"web"},
-];
-
-/* ===================== App-logica ===================== */
-const TRIP_FROM="2026-07-18", TRIP_TO="2026-07-31";
-const STORE_KEY="elzas2026.v1";
-
-// status, stemmen + eigen plannen persistent (veilig: faalt nooit als storage geblokkeerd is)
-let store={status:{}, votes:{}, custom:[]};
-try{ const raw=localStorage.getItem(STORE_KEY); if(raw) store=JSON.parse(raw); }catch(e){}
-if(!store.status) store.status={};
-if(!store.votes) store.votes={};
-if(!Array.isArray(store.custom)) store.custom=[];
-function save(){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(store)); }catch(e){} }
-
-const state={ q:"", aud:new Set(), cat:new Set(), who:new Set(), maxdist:999, onlyTrip:true, rainproof:false, onlyPicked:false, sort:"dist", view:"list" };
-
-function allItems(){ return [...store.custom, ...ACTIVITIES]; }
-function votesOf(it){ const v=store.votes[it.id]; return Array.isArray(v)?v:[]; }
-function mapsUrl(it){
-  const dest=encodeURIComponent((it.title?it.title+" ":"")+(it.town||"")+", France");
-  return `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(HOME)}&destination=${dest}`;
-}
-function inTrip(it){
-  if(!it.dates) return true; // altijd beschikbaar
-  if(Array.isArray(it.dates)) return it.dates.some(d=> d>=TRIP_FROM && d<=TRIP_TO);
-  return it.dates.from<=TRIP_TO && it.dates.to>=TRIP_FROM; // range-overlap
-}
-function firstDate(it){
-  if(!it.dates) return "9999";
-  if(Array.isArray(it.dates)) return it.dates.slice().sort()[0];
-  return it.dates.from;
-}
-function matches(it){
-  if(state.onlyTrip && !inTrip(it)) return false;
-  if(state.rainproof && it.env==="buiten") return false;
-  if(it.dist>state.maxdist) return false;
-  if(state.cat.size && !state.cat.has(it.category)) return false;
-  if(state.aud.size && !it.tags.some(t=>state.aud.has(t))) return false;
-  if(state.who.size){ const v=votesOf(it); if(!v.some(p=>state.who.has(p))) return false; }
-  if(state.onlyPicked && store.status[it.id]!=="geboekt") return false;
-  if(state.q){
-    const hay=(it.title+" "+(it.what||"")+" "+(it.town||"")+" "+CATS[it.category].label).toLowerCase();
-    if(!hay.includes(state.q.toLowerCase())) return false;
-  }
-  return true;
-}
-
-const ENVMETA = {buiten:["🌳","buiten"], binnen:["🏠","binnen"], beide:["🌤️","binnen+buiten"]};
-
-function filteredSorted(){
-  let items=allItems().filter(matches);
-  items.sort((a,b)=>{
-    if(state.sort==="dist") return a.dist-b.dist;
-    if(state.sort==="rating") return (b.rating||0)-(a.rating||0);
-    if(state.sort==="votes") return votesOf(b).length-votesOf(a).length || a.dist-b.dist;
-    return firstDate(a).localeCompare(firstDate(b));
-  });
-  return items;
-}
-
-function render(){
-  const items=filteredSorted();
-
-  document.getElementById("empty").hidden = items.length>0;
-  document.getElementById("resultline").textContent =
-    `${items.length} ${items.length===1?"idee":"ideeën"} · ${state.onlyTrip?"tijdens jullie verblijf":"hele zomer"}${state.rainproof?" · regendag-proof":""}`;
-
-  const grid=document.getElementById("grid");
-  if(state.view==="map"){
-    renderMap(items);
-  } else {
-    grid.innerHTML = items.map(cardHtml).join("");
-  }
-
-  renderPickCount();
-  renderWhoCounts();
-  updateFilterBadge();
-}
-
-function updateFilterBadge(){
-  const n = state.aud.size + state.cat.size + state.who.size
-    + (state.rainproof?1:0) + (state.onlyPicked?1:0)
-    + (state.maxdist!==999?1:0) + (state.q?1:0) + (state.onlyTrip?0:1);
-  document.getElementById("filterToggle").innerHTML =
-    "⚙ Filters" + (n? ` <span class="badge">${n}</span>` : "");
-}
-
-function votesHtml(it){
-  return `<div class="votes"><span class="vlabel">Wil erheen</span>` +
-    Object.entries(PEOPLE).map(([k,p])=>{
-      const on=votesOf(it).includes(k);
-      return `<button class="pvote" data-id="${it.id}" data-p="${k}" style="--pc:${p.color}" aria-pressed="${on}" title="${p.name} wil ${on?'':'niet '}hierheen">${p.name[0]}</button>`;
-    }).join("") + `</div>`;
-}
-
-function cardHtml(it){
-  const c=CATS[it.category];
-  const st=store.status[it.id]||"";
-  const thumb = it.img
-    ? `<img src="${it.img}" alt="" loading="lazy" onerror="this.remove()"/>`
-    : `<span class="emoji">${c.emoji}</span>`;
-  const envM = it.env && ENVMETA[it.env];
-  const envTag = envM ? `<span class="envtag ${it.env}">${envM[0]} ${envM[1]}</span>` : "";
-  const peuterTag = it.tags.includes("peuter") ? `<span class="tag peuter">👶 peuter-ok</span>` : "";
-  const resTag = it.book ? `<span class="tag res">reserveren</span>` : "";
-  const verifyTag = it.verify ? `<span class="tag verify">⚠ te verifiëren</span>` : "";
-  const rate = it.rating ? `<span class="rate">★ <b>${it.rating.toFixed(1)}</b></span>` : "";
-  const price = it.price ? `<span class="rate">${it.price}</span>` : "";
-  const info = it.url ? `<a href="${it.url}" target="_blank" rel="noopener">Info ↗</a>` : "";
-  return `<article class="card ${st?'is-'+st:''}" style="--cat:${c.color}">
-    <div class="thumb">${thumb}
-      <span class="stamp">~${it.dist} km</span>
-      ${it.whenLabel?`<span class="when">${it.whenLabel}</span>`:``}
-    </div>
-    <div class="body">
-      <span class="cat">${c.label}</span>
-      <h3>${it.title}</h3>
-      <div class="where">📍 ${it.town}</div>
-      <p class="what">${it.what||""}</p>
-      <div class="tagrow">${envTag}${peuterTag}${resTag}${verifyTag}${rate}${price}</div>
-      <div class="links">${info}<a href="${mapsUrl(it)}" target="_blank" rel="noopener">Route ↗</a></div>
-      ${votesHtml(it)}
-      <div class="foot">
-        <button class="sbtn s-geboekt"  data-id="${it.id}" data-s="geboekt"  aria-pressed="${st==='geboekt'}">✓ Geboekt</button>
-        <button class="sbtn s-nee"      data-id="${it.id}" data-s="nee"      aria-pressed="${st==='nee'}">✕ Nee</button>
-      </div>
-    </div>
-  </article>`;
-}
-
-function renderWhoCounts(){
-  const items=allItems();
-  const chips=document.getElementById("whoChips");
-  Object.keys(PEOPLE).forEach(k=>{
-    const n=items.filter(it=>votesOf(it).includes(k)).length;
-    const el=chips.querySelector(`[data-cb="${k}"]`);
-    if(el) el.textContent = n? ` ${n}` : "";
-  });
-}
-
-/* ===================== Kaartweergave (Leaflet) =====================
-   Google Maps' JavaScript-kaart vereist een betaalde API-sleutel; die is er
-   bewust niet. Daarom een sleutelvrije, interactieve kaart met moderne tegels
-   (CARTO Voyager) + een Satelliet-laag (Esri). Navigeren doe je met de
-   Google Maps-deeplinks ("Route ↗" / "Open in Google Maps").
-   ================================================================== */
-let map=null, markerLayer=null;
-function pinIcon(color, home){
-  return L.divIcon({className:"pin"+(home?" home":""), html:`<span style="--c:${color}"></span>`, iconSize:[18,18], iconAnchor:[9,16], popupAnchor:[0,-14]});
-}
-/* opvallende marker voor ons verblijf */
-function homeIcon(){
-  return L.divIcon({className:"homepin", html:`<div class="homepin-dot">🏡</div>`, iconSize:[42,42], iconAnchor:[21,21], popupAnchor:[0,-20]});
-}
-/* Coöperatieve gestures op touch: één vinger scrollt de pagina, twee vingers
-   bewegen/zoomen de kaart. Zo blijft de pagina scrollbaar op de telefoon. */
-function setupTouchGestures(map){
-  const c=map.getContainer();
-  const hint=document.getElementById("mapHint");
-  let t, shows=0, armed=false, last=0;
-  map.dragging.disable();                 // standaard uit → één vinger = pagina scrollen
-  c.addEventListener("touchstart",e=>{
-    if(e.touches.length>=2){ map.dragging.enable(); if(hint) hint.classList.remove("show"); }
-    else { map.dragging.disable(); armed=true; }   // begin van een nieuwe één-vinger-aanraking
-  },{passive:true});
-  c.addEventListener("touchmove",e=>{
-    // hint bewust spaarzaam: max 2× per sessie, hooguit eens per 30 s en maar
-    // één keer per aanraking — zo verschijnt hij niet meer bij elke veeg
-    if(e.touches.length<2 && hint && armed){
-      armed=false;
-      const now=Date.now();
-      if(shows<2 && now-last>30000){
-        shows++; last=now;
-        hint.classList.add("show"); clearTimeout(t); t=setTimeout(()=>hint.classList.remove("show"),1200);
-      }
-    }
-  },{passive:true});
-  c.addEventListener("touchend",()=>{ armed=false; },{passive:true});
-}
-function jitter(id){
-  // kleine spreiding zodat meerdere pins in hetzelfde dorp niet exact op elkaar
-  // vallen — bewust klein (~120 m) zodat ze dicht bij de dorpskern blijven staan
-  let h=0; for(const ch of String(id)) h=(h*31+ch.charCodeAt(0))&0xffff;
-  return [((h%100)/100-0.5)*0.0022, (((h>>4)%100)/100-0.5)*0.0022];
-}
-function popupHtml(it){
-  const info = it.url ? `<a href="${it.url}" target="_blank" rel="noopener">Info ↗</a> · ` : "";
-  const photo = it.img ? `<img class="popup-photo" src="${it.img}" alt="" loading="lazy">` : "";
-  const desc = it.what ? `<div class="popup-desc">${it.what}</div>` : "";
-  const v = votesOf(it);
-  const votes = v.length ? `<div class="popup-votes">`+v.map(p=>`<span class="pdot" style="background:${PEOPLE[p].color}" title="${PEOPLE[p].name}">${PEOPLE[p].name[0]}</span>`).join("")+`</div>` : "";
-  return `${photo}<strong>${it.title}</strong><br>`
-    + `<span style="color:#5B6B66">📍 ${it.town}${it.whenLabel?" · "+it.whenLabel:""}</span>`
-    + `${desc}${votes}`
-    + `${info}<a href="${mapsUrl(it)}" target="_blank" rel="noopener">Route ↗</a>`;
-}
-function ensureMap(){
-  if(map) return;
-  const isTouch = window.matchMedia("(pointer:coarse)").matches;
-  map = L.map("map", {scrollWheelZoom:!isTouch}).setView(COORDS["Schœnbourg"], 11);
-  const voyager = L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
-    {maxZoom:19, subdomains:"abcd", attribution:'&copy; OpenStreetMap &copy; CARTO'}).addTo(map);
-  const sat = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-    {maxZoom:19, attribution:'Tiles &copy; Esri'});
-
-  const toggle = L.control({position:"topright"});
-  toggle.onAdd = function(){
-    const d = L.DomUtil.create("div","maptoggle");
-    d.innerHTML = `<button class="active" data-l="map">Kaart</button><button data-l="sat">Satelliet</button>`;
-    L.DomEvent.disableClickPropagation(d);
-    d.addEventListener("click", ev=>{
-      const btn=ev.target.closest("button"); if(!btn) return;
-      d.querySelectorAll("button").forEach(b=>b.classList.toggle("active", b===btn));
-      if(btn.dataset.l==="sat"){ map.removeLayer(voyager); sat.addTo(map); }
-      else { map.removeLayer(sat); voyager.addTo(map); }
-    });
-    return d;
-  };
-  toggle.addTo(map);
-
-  markerLayer = L.layerGroup().addTo(map);
-  // Ons verblijf — groot, gekleurd, met pulserende ring, vast label en altijd bovenop
-  L.marker(COORDS["Schœnbourg"], {icon:homeIcon(), zIndexOffset:1000, keyboard:false})
-    .addTo(map)
-    .bindPopup("🏡 <strong>Ons verblijf</strong><br>27 Rue Lot. Waldmatt, Schœnbourg")
-    .bindTooltip("Ons verblijf", {permanent:true, direction:"top", offset:[0,-22], className:"home-label"});
-  if(isTouch) setupTouchGestures(map);
-}
-function renderMap(items){
-  ensureMap();
-  markerLayer.clearLayers();
-  const pts=[COORDS["Schœnbourg"]];
-  items.forEach(it=>{
-    // exacte coördinaten (indien opgegeven) worden 1-op-1 gebruikt, zonder spreiding;
-    // anders de dorpskern bij benadering + een kleine spreiding tegen overlap
-    let ll;
-    if(Array.isArray(it.coords)){
-      ll=it.coords;
-    } else {
-      const base = COORDS[it.town] || COORDS["Alsace Bossue"];
-      if(!base) return;
-      const j=jitter(it.id);
-      ll=[base[0]+j[0], base[1]+j[1]];
-    }
-    pts.push(ll);
-    L.marker(ll, {icon:pinIcon(CATS[it.category].color, false)}).bindPopup(popupHtml(it), {maxWidth:240}).addTo(markerLayer);
-  });
-  if(pts.length>1){ try{ map.fitBounds(pts, {padding:[34,34], maxZoom:12}); }catch(e){} }
-  setTimeout(()=>map.invalidateSize(), 30);
-}
-function buildLegend(){
-  document.getElementById("legend").innerHTML =
-    Object.values(CATS).map(c=>`<span class="li"><span class="dot" style="background:${c.color}"></span>${c.label}</span>`).join("")
-    + `<span class="li"><span class="dot" style="background:var(--feest);border:2px solid #fff;box-shadow:0 0 0 1px var(--line2)"></span>Ons verblijf</span>`;
-}
-function setView(v){
-  state.view=v;
-  document.getElementById("grid").hidden = v!=="list";
-  document.getElementById("map").hidden = v!=="map";
-  document.getElementById("maptools").hidden = v!=="map";
-  document.getElementById("legend").hidden = v!=="map";
-  document.querySelectorAll("[data-view]").forEach(b=>b.setAttribute("aria-pressed", String(b.dataset.view===v)));
-  render();
-}
-
-/* ===================== Export & delen ===================== */
-function pickedItems(){ return allItems().filter(it=>store.status[it.id]==="geboekt"); }
-function renderPickCount(){
-  const n=pickedItems().length;
-  document.getElementById("pickCount").textContent = n? `${n} gekozen` : "nog niets gekozen";
-}
-function toast(msg){
-  const el=document.getElementById("toast");
-  el.textContent=msg; el.hidden=false;
-  clearTimeout(toast._t); toast._t=setTimeout(()=>el.hidden=true, 2800);
-}
-function download(name, text, type){
-  const blob=new Blob([text], {type});
-  const u=URL.createObjectURL(blob);
-  const a=document.createElement("a"); a.href=u; a.download=name; document.body.appendChild(a); a.click(); a.remove();
-  setTimeout(()=>URL.revokeObjectURL(u), 1500);
-}
-async function copyText(text, msg){
-  try{ await navigator.clipboard.writeText(text); }
-  catch(e){ const ta=document.createElement("textarea"); ta.value=text; document.body.appendChild(ta); ta.select(); try{document.execCommand("copy");}catch(_){} ta.remove(); }
-  toast(msg);
-}
-function nextDay(d){ const t=new Date(d+"T00:00:00Z"); t.setUTCDate(t.getUTCDate()+1); return t.toISOString().slice(0,10); }
-function icsEsc(s){ return String(s).replace(/\\/g,"\\\\").replace(/;/g,"\\;").replace(/,/g,"\\,").replace(/\n/g,"\\n"); }
-function buildICS(){
-  const picks=pickedItems();
-  const lines=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Elzas2026//planner//NL","CALSCALE:GREGORIAN"];
-  const stamp=new Date().toISOString().replace(/[-:]/g,"").split(".")[0]+"Z";
-  let count=0;
-  const evt=(it,start,endExcl,suffix)=>{
-    lines.push("BEGIN:VEVENT","UID:"+it.id+(suffix||"")+"@elzas2026","DTSTAMP:"+stamp,
-      "DTSTART;VALUE=DATE:"+start.replace(/-/g,""),"DTEND;VALUE=DATE:"+endExcl.replace(/-/g,""),
-      "SUMMARY:"+icsEsc("✓ "+it.title));
-    if(it.town) lines.push("LOCATION:"+icsEsc(it.town+", France"));
-    const desc=[it.what,it.whenLabel,it.url].filter(Boolean).join(" — ");
-    if(desc) lines.push("DESCRIPTION:"+icsEsc(desc));
-    lines.push("END:VEVENT"); count++;
-  };
-  picks.forEach(it=>{
-    if(!it.dates) return;
-    if(Array.isArray(it.dates)) it.dates.forEach((d,i)=>evt(it, d, nextDay(d), "-"+i));
-    else evt(it, it.dates.from, nextDay(it.dates.to));
-  });
-  lines.push("END:VCALENDAR");
-  return {ics:lines.join("\r\n"), count, total:picks.length};
-}
-function voteNames(it){ return votesOf(it).map(p=>PEOPLE[p]?PEOPLE[p].name:p); }
-function buildMarkdown(){
-  const picks=pickedItems();
-  const fmt=it=>{
-    const who=voteNames(it);
-    return `- **${it.title}** — ${it.town}${it.whenLabel?" · "+it.whenLabel:""}${it.price?" · "+it.price:""}${it.book?" · reserveren ("+it.book+")":""}${who.length?" · 👍 "+who.join(", "):""}${it.url?` — ${it.url}`:""}`;
-  };
-  const out=["# Elzas 2026 — onze keuzes", "", "_Schœnbourg · 18–31 juli 2026_", ""];
-  if(picks.length){ out.push("## ✓ Geboekt"); picks.forEach(it=>out.push(fmt(it))); }
-  else out.push("_Nog niets gekozen._");
-  return out.join("\n");
-}
-function buildShareURL(){
-  const payload={s:store.status, v:store.votes, c:store.custom};
-  const b64=btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
-  return location.origin+location.pathname+"#s="+b64;
-}
-function loadShared(){
-  const m=location.hash.match(/[#&]s=([^&]+)/);
-  if(!m) return false;
-  try{
-    const p=JSON.parse(decodeURIComponent(escape(atob(m[1]))));
-    if(p.s && typeof p.s==="object") store.status=Object.assign({}, store.status, p.s);
-    if(p.v && typeof p.v==="object"){
-      Object.entries(p.v).forEach(([id,arr])=>{
-        if(!Array.isArray(arr)) return;
-        const cur=new Set(votesOf({id})); arr.forEach(x=>cur.add(x));
-        store.votes[id]=[...cur];
-      });
-    }
-    if(Array.isArray(p.c)){ const ids=new Set(store.custom.map(x=>x.id)); p.c.forEach(x=>{ if(x&&!ids.has(x.id)) store.custom.push(x); }); }
-    save(); return true;
-  }catch(e){ return false; }
-}
-
-/* ===================== UI opbouw + events ===================== */
-const catChips=document.getElementById("catChips");
-catChips.innerHTML=Object.entries(CATS).map(([k,c])=>
-  `<button class="chip" data-cat="${k}" aria-pressed="false"><span class="dot" style="background:${c.color}"></span>${c.label}</button>`).join("");
-const whoChips=document.getElementById("whoChips");
-whoChips.innerHTML=Object.entries(PEOPLE).map(([k,p])=>
-  `<button class="chip" data-who="${k}" aria-pressed="false"><span class="dot" style="background:${p.color}"></span>${p.name}<span class="cbadge" data-cb="${k}"></span></button>`).join("");
-const addCatSel=document.getElementById("addCat");
-addCatSel.innerHTML=Object.entries(CATS).map(([k,c])=>`<option value="${k}">${c.label}</option>`).join("");
-document.getElementById("gmapsAll").href="https://www.google.com/maps/search/?api=1&query="+encodeURIComponent("Schœnbourg, 67320, France");
-buildLegend();
-
-document.getElementById("q").addEventListener("input",e=>{state.q=e.target.value;render();});
-document.getElementById("sort").addEventListener("change",e=>{state.sort=e.target.value;render();});
-document.getElementById("maxdist").addEventListener("change",e=>{state.maxdist=+e.target.value;render();});
-document.getElementById("onlyTrip").addEventListener("change",e=>{state.onlyTrip=e.target.checked;render();});
-document.getElementById("rainproof").addEventListener("change",e=>{state.rainproof=e.target.checked;render();});
-document.getElementById("audChips").addEventListener("click",e=>{
-  const b=e.target.closest(".chip"); if(!b)return;
-  const a=b.dataset.aud, on=b.getAttribute("aria-pressed")==="true";
-  b.setAttribute("aria-pressed",String(!on)); on?state.aud.delete(a):state.aud.add(a); render();
-});
-whoChips.addEventListener("click",e=>{
-  const b=e.target.closest(".chip"); if(!b)return;
-  const k=b.dataset.who, on=b.getAttribute("aria-pressed")==="true";
-  b.setAttribute("aria-pressed",String(!on)); on?state.who.delete(k):state.who.add(k); render();
-});
-catChips.addEventListener("click",e=>{
-  const b=e.target.closest(".chip"); if(!b)return;
-  const k=b.dataset.cat, on=b.getAttribute("aria-pressed")==="true";
-  b.setAttribute("aria-pressed",String(!on)); on?state.cat.delete(k):state.cat.add(k); render();
-});
-document.getElementById("onlyPicked").addEventListener("click",e=>{
-  state.onlyPicked=!state.onlyPicked; e.currentTarget.setAttribute("aria-pressed",String(state.onlyPicked)); render();
-});
-document.querySelectorAll("[data-view]").forEach(b=>b.addEventListener("click",()=>setView(b.dataset.view)));
-const filterToggle=document.getElementById("filterToggle");
-filterToggle.addEventListener("click",()=>{
-  const c=document.getElementById("controls");
-  const open=c.classList.toggle("open");
-  filterToggle.setAttribute("aria-expanded", String(open));
-});
-document.getElementById("grid").addEventListener("click",e=>{
-  const pv=e.target.closest(".pvote");
-  if(pv){
-    const id=pv.dataset.id, p=pv.dataset.p;
-    const arr=Array.isArray(store.votes[id])?store.votes[id]:[];
-    const i=arr.indexOf(p);
-    if(i>=0) arr.splice(i,1); else arr.push(p);
-    if(arr.length) store.votes[id]=arr; else delete store.votes[id];
-    save(); render(); return;
-  }
-  const b=e.target.closest(".sbtn"); if(!b)return;
-  const id=b.dataset.id, s=b.dataset.s;
-  store.status[id] = store.status[id]===s ? "" : s; // toggle
-  save(); render();
-});
-
-/* export-knoppen */
-document.getElementById("expIcs").addEventListener("click",()=>{
-  const {ics,count,total}=buildICS();
-  if(total===0){ toast("Nog niets geboekt."); return; }
-  if(count===0){ toast("Je keuzes hebben (nog) geen datum — niets voor de agenda."); return; }
-  download("elzas-2026.ics", ics, "text/calendar;charset=utf-8");
-  toast(`${count} ${count===1?"item":"items"} naar agenda (.ics).`);
-});
-document.getElementById("expMd").addEventListener("click",()=>{
-  if(pickedItems().length===0){ toast("Nog niets gekozen om te kopiëren."); return; }
-  copyText(buildMarkdown(), "Markdown gekopieerd — plak in WhatsApp of Notes.");
-});
-document.getElementById("expShare").addEventListener("click",()=>{
-  copyText(buildShareURL(), "Deel-link gekopieerd — keuzes én stemmen reizen mee.");
-});
-
-/* eigen plan */
-const dlg=document.getElementById("addDlg");
-document.getElementById("addBtn").addEventListener("click",()=>dlg.showModal());
-document.getElementById("addForm").addEventListener("submit",e=>{
-  if(e.submitter && e.submitter.value!=="ok") return; // annuleren
-  const f=new FormData(e.target);
-  const aud=[...e.target.querySelectorAll('input[name=aud]:checked')].map(i=>i.value);
-  const item={
-    id:"eigen-"+Date.now(),
-    title:(f.get("title")||"Naamloos plan").trim(),
-    what:(f.get("what")||"").trim(),
-    town:(f.get("town")||"").trim()||"—",
-    dist:Number(f.get("dist"))||0,
-    category:f.get("category")||"feest",
-    tags:aud.length?aud:["iedereen"],
-    env:f.get("env")||"beide",
-    dates:f.get("date")?[f.get("date")]:null,
-    whenLabel:f.get("date")?("📌 "+f.get("date")):"eigen idee",
-    rating:null, price:"", book:null,
-    url:(f.get("url")||"").trim()||null, img:null, source:"eigen"
-  };
-  store.custom.unshift(item); save(); render();
-  e.target.reset();
-});
-
-/* gedeelde staat uit de URL inladen (indien aanwezig) */
-if(loadShared()) toast("Gedeelde keuzes & stemmen geladen.");
-
-render();
-</script>
+<script src="assets/js/data.js" defer></script>
+<script src="assets/js/app.js" defer></script>
+<script src="assets/js/map.js" defer></script>
+<script src="assets/js/planner.js" defer></script>
 </body>
 </html>
