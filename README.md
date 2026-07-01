@@ -11,7 +11,7 @@ de kaarttegels hebben internet nodig). Open `index.html` direct, of draai
 
 - **Filteren & zoeken** — zoekbalk, "alleen tijdens verblijf" (18–31 jul), voor
   wie geschikt (peuter / kids / ouders), soort, max afstand, sorteren (afstand /
-  datum / rating / meeste stemmen) en "alleen shortlist/geboekt".
+  datum / rating / meeste stemmen) en "alleen geboekt".
 - **Wie wil erheen** — onder elke kaart tikt ieder gezinslid (Alma, Freija,
   Marloes, Tom, Lotta) zijn eigen gekleurde bolletje aan. Filter op persoon via
   "Wie wil erheen", sorteer op meeste stemmen, en de stemmen reizen mee in de
@@ -21,12 +21,13 @@ de kaarttegels hebben internet nodig). Open `index.html` direct, of draai
 - **Kaartweergave** — schakel tussen Lijst en 🗺️ Kaart. Alle (gefilterde)
   activiteiten staan als gekleurde stippen rond Schœnbourg op een moderne kaart,
   met een **Kaart / Satelliet**-schakelaar, een categorie-legenda en popups met
-  foto, beschrijving, stemmen en info- en route-link. Posities zijn de dorpskern
-  bij benadering; voor exacte navigatie gebruik je "Route ↗" of "Open omgeving
-  in Google Maps".
-- **Brainstorm-status** per kaart: Shortlist / Geboekt / Nee, met telbalk
-  bovenaan. Bewaard in `localStorage`.
-- **Exporteren & delen** (werkt op je shortlist + geboekt):
+  foto, beschrijving, stemmen en info- en route-link. Ons verblijf staat als een
+  extra opvallende, gelabelde marker met pulserende ring. Posities zijn de
+  dorpskern bij benadering; voor exacte navigatie gebruik je "Route ↗" of "Open
+  omgeving in Google Maps". Op de telefoon scrol je met **één vinger** over de
+  kaart heen; met **twee vingers** beweeg en zoom je de kaart.
+- **Brainstorm-status** per kaart: Geboekt / Nee. Bewaard in `localStorage`.
+- **Exporteren & delen** (werkt op wat je geboekt hebt):
   - **Agenda (.ics)** — items met een datum als agenda-bestand voor je telefoon.
   - **Markdown** — een nette lijst (met wie erheen wil) op je klembord om te appen.
   - **Deel-link** — je keuzes én stemmen (inclusief eigen plannen) gecodeerd in
