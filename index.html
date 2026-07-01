@@ -383,6 +383,7 @@
    DATA — voeg hier simpel nieuwe activiteiten toe (of via de knop ＋Eigen plan)
    Velden:
      id, title, what, town, dist(km, ~), category, tags:['peuter','kids','ouders'],
+     coords:[lat,lon]  // optioneel: exacte pin-plek; anders dorpskern (COORDS[town])
      env: 'buiten' | 'binnen' | 'beide',   // voor de regendag-filter
      dates: null (altijd) | ['2026-07-22',...] | {from:'…',to:'…'},
      whenLabel, rating(0-5|null), price, book, url(info), img(null|pad/URL),
@@ -414,7 +415,7 @@ const CATS = {
 
 /* Dorpskern-coördinaten (bij benadering) voor de kaartweergave */
 const COORDS = {
-  "Schœnbourg":[48.8531,7.2806],
+  "Schœnbourg":[48.8292222,7.2654444],   /* exacte locatie verblijf: 48°49'45.2"N 7°15'55.6"E */
   "Rhodes":[48.7560,6.9450],
   "Kintzheim":[48.2569,7.3950],
   "La Petite-Pierre":[48.8589,7.3175],
@@ -498,7 +499,7 @@ const ACTIVITIES = [
   {id:"biere", title:"Fête de la Bière", what:"Bierfeest in Schiltigheim. Vooral voor de ouders. (Valt net na vertrek.)", town:"Schiltigheim", dist:50, category:"feest", tags:["ouders"], env:"buiten", dates:{from:"2026-07-31",to:"2026-08-03"}, whenLabel:"31 jul–3 aug", rating:null, price:"—", book:null, url:"https://www.ville-schiltigheim.fr/culture-sports-et-loisirs/grands-evenements/fete-de-la-biere-et-braderie-de-lucas/", img:null, source:"web"},
 
   /* ---- CCAB — de hele zomer beschikbaar (op afspraak) ---- */
-  {id:"velorail", title:"Vélorail du Pays Secret", what:"Beleef de bijzondere railfiets-ervaring! Aan boord van een voertuig voor 4 personen (elektrisch of standaard) leg je bijna 14 km af tussen heuvels en bossen, op het pad van de ooievaars.", town:"Drulingen", dist:5, category:"actief", tags:["kids","ouders"], env:"buiten", dates:null, whenLabel:"hele zomer · reserveren", rating:null, price:"€€", book:"07 66 49 29 09", url:"https://lesvelorailsdugrandest.fr/vallee-du-pays-secret/", img:"img/velorail.jpg", source:"ccab"},
+  {id:"velorail", title:"Vélorail du Pays Secret", what:"Beleef de bijzondere railfiets-ervaring! Aan boord van een voertuig voor 4 personen (elektrisch of standaard) leg je bijna 14 km af tussen heuvels en bossen, op het pad van de ooievaars.", town:"Drulingen", coords:[48.8659843,7.1866897], dist:5, category:"actief", tags:["kids","ouders"], env:"buiten", dates:null, whenLabel:"hele zomer · reserveren", rating:null, price:"€€", book:"07 66 49 29 09", url:"https://lesvelorailsdugrandest.fr/vallee-du-pays-secret/", img:"img/velorail.jpg", source:"ccab"},
   {id:"barque", title:"Balade en barque op de Sarre", what:"Stap aan boord en laat je wiegen door de zachte stroming van de Saar, terwijl je geniet van de rijke fauna en flora langs de oevers.", town:"Sarrewerden", dist:12, category:"water", tags:["kids","ouders"], env:"buiten", dates:null, whenLabel:"jul–sep · reserveren", rating:null, price:"€", book:"OT 03 88 00 40 39", url:"https://www.alsace-bossue.net/decouvrir/incontournables1.html?titre=decouverte-de-la-sarre-en-barques&fiche=270004751", img:"img/barque.jpg", source:"ccab"},
   {id:"chevalpark", title:"Parc Nature de Cheval", what:"Beleef een onvergetelijk moment met de paardenshow 'Les terres oubliées'. Doorkruis in een middeleeuws-fantastische wereld de thematische wijken — leerzaam en vermakelijk voor het hele gezin.", town:"Altwiller", dist:14, category:"dieren", tags:["kids","ouders"], env:"buiten", dates:null, whenLabel:"hele zomer · check tijden", rating:null, price:"€€", book:"03 88 01 45 21", url:"https://www.parc-naturedecheval.fr", img:"img/chevalpark.jpg", source:"ccab"},
   {id:"randoland", title:"Randoland & Géocaching", what:"Speelse speurtochten met raadselboekjes (Lorentzen, Dehlingen, Diemeringen) voor 4–12 jr + geocaching. Een mix van rally en oriëntatieloop — verrassende en ludieke ontdekkingen voor het hele gezin.", town:"Alsace Bossue", dist:5, category:"natuur", tags:["peuter","kids","ouders"], env:"buiten", dates:null, whenLabel:"hele zomer · materiaal bij OT", rating:null, price:"gratis/€", book:null, url:"https://www.alsace-bossue.net", img:"img/randoland.jpg", source:"ccab"},
@@ -671,19 +672,31 @@ function homeIcon(){
 function setupTouchGestures(map){
   const c=map.getContainer();
   const hint=document.getElementById("mapHint");
-  let t;
+  let t, shows=0, armed=false, last=0;
   map.dragging.disable();                 // standaard uit → één vinger = pagina scrollen
   c.addEventListener("touchstart",e=>{
     if(e.touches.length>=2){ map.dragging.enable(); if(hint) hint.classList.remove("show"); }
-    else map.dragging.disable();
+    else { map.dragging.disable(); armed=true; }   // begin van een nieuwe één-vinger-aanraking
   },{passive:true});
   c.addEventListener("touchmove",e=>{
-    if(e.touches.length<2 && hint){ hint.classList.add("show"); clearTimeout(t); t=setTimeout(()=>hint.classList.remove("show"),1400); }
+    // hint bewust spaarzaam: max 2× per sessie, hooguit eens per 30 s en maar
+    // één keer per aanraking — zo verschijnt hij niet meer bij elke veeg
+    if(e.touches.length<2 && hint && armed){
+      armed=false;
+      const now=Date.now();
+      if(shows<2 && now-last>30000){
+        shows++; last=now;
+        hint.classList.add("show"); clearTimeout(t); t=setTimeout(()=>hint.classList.remove("show"),1200);
+      }
+    }
   },{passive:true});
+  c.addEventListener("touchend",()=>{ armed=false; },{passive:true});
 }
 function jitter(id){
+  // kleine spreiding zodat meerdere pins in hetzelfde dorp niet exact op elkaar
+  // vallen — bewust klein (~120 m) zodat ze dicht bij de dorpskern blijven staan
   let h=0; for(const ch of String(id)) h=(h*31+ch.charCodeAt(0))&0xffff;
-  return [((h%100)/100-0.5)*0.012, (((h>>4)%100)/100-0.5)*0.012];
+  return [((h%100)/100-0.5)*0.0022, (((h>>4)%100)/100-0.5)*0.0022];
 }
 function popupHtml(it){
   const info = it.url ? `<a href="${it.url}" target="_blank" rel="noopener">Info ↗</a> · ` : "";
@@ -733,10 +746,17 @@ function renderMap(items){
   markerLayer.clearLayers();
   const pts=[COORDS["Schœnbourg"]];
   items.forEach(it=>{
-    const base = COORDS[it.town] || COORDS["Alsace Bossue"];
-    if(!base) return;
-    const j=jitter(it.id);
-    const ll=[base[0]+j[0], base[1]+j[1]];
+    // exacte coördinaten (indien opgegeven) worden 1-op-1 gebruikt, zonder spreiding;
+    // anders de dorpskern bij benadering + een kleine spreiding tegen overlap
+    let ll;
+    if(Array.isArray(it.coords)){
+      ll=it.coords;
+    } else {
+      const base = COORDS[it.town] || COORDS["Alsace Bossue"];
+      if(!base) return;
+      const j=jitter(it.id);
+      ll=[base[0]+j[0], base[1]+j[1]];
+    }
     pts.push(ll);
     L.marker(ll, {icon:pinIcon(CATS[it.category].color, false)}).bindPopup(popupHtml(it), {maxWidth:240}).addTo(markerLayer);
   });
