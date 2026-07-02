@@ -77,10 +77,11 @@ Eén activiteit (`assets/js/data.js`):
 }
 ```
 
-Alle URL's zijn geverifieerde officiële pagina's (juni 2026). Activiteiten
-zonder eigen site linken naar de
-[CCAB-agenda](https://www.alsace-bossue.net/agenda-complet.html); de exacte
-data van het zomerprogramma worden pas in juni/juli definitief.
+Alle URL's zijn geverifieerde officiële pagina's; het CCAB-zomerprogramma
+(18–31 juli) is opnieuw tegen de
+[CCAB-agenda](https://www.alsace-bossue.net/agenda-complet.html) gecontroleerd
+in juli 2026 (data, tijden en plaatsen bevestigd). Activiteiten zonder eigen
+site linken rechtstreeks naar hun agenda-fiche of naar de CCAB-agenda.
 
 ## Foto's
 
