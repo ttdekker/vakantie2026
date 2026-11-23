@@ -14,8 +14,8 @@ kaarttegels en het weerbericht hebben internet nodig).
   (sorteren, hele zomer, alleen geboekt, wie wil erheen). Bovenaan verschijnt
   automatisch **Onze favorieten** zodra genoeg items 2+ stemmen hebben; bij
   5/5 stemmen: "Iedereen wil dit!".
-- **Kaart** — Leaflet (lokaal in `vendor/`, lazy geladen) met CARTO
-  Voyager + Esri-satelliet, categoriekleuren, popups met foto en stemmen, en
+- **Kaart** — Leaflet (lokaal in `vendor/`, lazy geladen) met OpenStreetMap
+  + Esri-satelliet, categoriekleuren, popups met foto en stemmen, en
   het verblijf als pulserende thuis-pin. Sleutelvrij; navigatie loopt via
   Google Maps-deeplinks ("Route").
 - **Ons plan** — 14 dagkaarten (18–31 juli). Activiteiten met een vaste datum
@@ -94,7 +94,7 @@ duotone categorie-illustratie (`img/fallback-*.svg`). Nieuwe foto toevoegen:
 ## Waarom geen Google Maps JavaScript-API
 
 Die vereist een API-sleutel met billing. De kaart is bewust sleutelvrij
-(Leaflet + CARTO/Esri-tegels); voor echte navigatie linkt elke popup en kaart
+(Leaflet + OpenStreetMap/Esri-tegels; CARTO vereist sinds 2026 een sleutel); voor echte navigatie linkt elke popup en kaart
 diep naar Google Maps. Het weer komt eveneens sleutelvrij van
 [Open-Meteo](https://open-meteo.com) en verschijnt alleen voor dagen binnen
 het voorspelbereik (±16 dagen).

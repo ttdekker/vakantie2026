@@ -68,7 +68,7 @@
     </ul>
   </div>
 </main>
-<footer>Kaart: © OpenStreetMap © CARTO · Hotel-pin bij benadering</footer>
+<footer>Kaart: © OpenStreetMap-bijdragers · Hotel-pin bij benadering</footer>
 
 <script src="../vendor/leaflet/leaflet.js"></script>
 <script>
@@ -84,8 +84,8 @@ const STOPS = [
 
 const plan = document.getElementById("plan");
 const map = L.map("map",{scrollWheelZoom:false});
-L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
-  {maxZoom:19, subdomains:"abcd", attribution:"&copy; OpenStreetMap &copy; CARTO"}).addTo(map);
+L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+  {maxZoom:19, attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'}).addTo(map);
 
 const markers = STOPS.map((s,i)=>{
   const icon = L.divIcon({className:"", html:`<div class="pin${s.train?" train":""}">${i+1}</div>`, iconSize:[28,28], iconAnchor:[14,14]});
