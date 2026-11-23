@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#7a1f2b" />
+<title>Keulen — donderdag 26 november</title>
+<meta name="description" content="Relaxed dagplan Keulen & Brühl: Dom, kerstmarkten, Brauhaus en kerstmarkt Brühl." />
+<link rel="stylesheet" href="../vendor/leaflet/leaflet.css" />
+<style>
+  :root{--bg:#faf6f1;--ink:#2a2522;--muted:#7b716a;--accent:#7a1f2b;--gold:#c9973f;--card:#fff;--line:#eadfd3}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+  header{background:linear-gradient(135deg,#7a1f2b,#4a1219);color:#fff;padding:28px 20px 22px}
+  header h1{margin:0;font-size:1.6rem;line-height:1.2}
+  header p{margin:6px 0 0;opacity:.85}
+  main{max-width:720px;margin:0 auto;padding:16px}
+  #map{height:58vh;min-height:320px;border-radius:14px;border:1px solid var(--line);margin:4px 0 18px}
+  h2{font-size:1.1rem;margin:22px 0 10px;color:var(--accent)}
+  ol.plan{list-style:none;margin:0;padding:0;position:relative}
+  ol.plan:before{content:"";position:absolute;left:21px;top:8px;bottom:8px;width:2px;background:var(--line)}
+  .stop{position:relative;display:flex;gap:12px;padding:8px 0;cursor:pointer}
+  .num{flex:0 0 44px;height:44px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;font-weight:700;z-index:1;border:3px solid var(--bg)}
+  .stop.train .num{background:var(--gold)}
+  .body{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;flex:1}
+  .time{font-weight:700;color:var(--accent);font-size:.9rem}
+  .title{font-weight:650}
+  .note{color:var(--muted);font-size:.92rem}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:10px}
+  .card ul{margin:6px 0 0;padding-left:18px}
+  .card li{margin:3px 0}
+  a{color:var(--accent)}
+  footer{color:var(--muted);font-size:.8rem;text-align:center;padding:20px 16px 40px}
+  .pin{background:var(--accent);color:#fff;border-radius:50%;width:28px;height:28px;display:grid;place-items:center;font:700 13px system-ui;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.35)}
+  .pin.train{background:var(--gold)}
+</style>
+</head>
+<body>
+<header>
+  <h1>Keulen · donderdag 26 november</h1>
+  <p>Relaxed: Dom, twee kerstmarkten, Brauhaus — rond 20:00 terug in Brühl</p>
+</header>
+<main>
+  <div id="map" role="img" aria-label="Kaart met de stops van de dag"></div>
+
+  <h2>Plan</h2>
+  <ol class="plan" id="plan"></ol>
+
+  <h2>Trein</h2>
+  <div class="card">
+    <ul>
+      <li><b>24hTicket 5 Personen, Preisstufe 2</b> (€ 26,40) via de VRS-app — geldt voor jullie tweeën.</li>
+      <li>Pas <b>op het perron in Brühl</b> kopen/activeren: hij loopt 24 uur vanaf start, dus dekt ook vrijdagochtend naar Keulen.</li>
+      <li>Vrijdagavond tweede 24h-ticket voor terug + zaterdag; zonder zaterdag: 2 losse kaartjes (€ 5,50 p.p.).</li>
+      <li>Treintijden rond 12:30 en 18:40 even checken in de app; rit ± 20 min.</li>
+    </ul>
+  </div>
+
+  <h2>Handig</h2>
+  <div class="card">
+    <ul>
+      <li>Hotel: vroeg parkeren is akkoord — even melden bij de receptie.</li>
+      <li>Glühwein-mok = statiegeld (Pfand); inleveren of als souvenir houden.</li>
+      <li>Brauhaus: de Köbes schenkt Kölsch bij tot je je bierviltje op het glas legt.</li>
+      <li>Wat contant geld mee; niet elk kraampje pint.</li>
+      <li>Nog fit bij Heinzels? Hafen-markt bij het Schokoladenmuseum is 15 min lopen langs de Rijn (do tot 21:00).</li>
+      <li>Kerstmarkt Brühl: openingstijden niet bevestigd — te laat? Dan vrijdag.</li>
+    </ul>
+  </div>
+</main>
+<footer>Kaart: © OpenStreetMap © CARTO · Hotel-pin bij benadering</footer>
+
+<script src="../vendor/leaflet/leaflet.js"></script>
+<script>
+const STOPS = [
+  {t:"12:00", n:"Hotel am Stern — auto parkeren", note:"Uhlstraße 101–103, Brühl. Melden bij receptie.", ll:[50.8262,6.9065]},
+  {t:"12:30", n:"Station Brühl", note:"24hTicket activeren, trein naar Köln Hbf (± 20 min).", ll:[50.8287741,6.9129176], train:true},
+  {t:"13:00", n:"Kölner Dom", note:"Eerst naar binnen nu het nog licht is.", ll:[50.9412784,6.9582814]},
+  {t:"14:00", n:"Weihnachtsmarkt am Dom", note:"Glühwein + hapje als late lunch; doordeweeks relatief rustig.", ll:[50.9405848,6.9577967]},
+  {t:"15:30", n:"Heinzels Wintermärchen (Altstadt)", note:"Alter Markt & Heumarkt; mooiste bij schemering (± 16:30).", ll:[50.9370955,6.9602779]},
+  {t:"17:15", n:"Brauhaus Früh am Dom", note:"Vroeg eten + Kölsch; 5 min lopen naar Hbf. Trein ± 18:40.", ll:[50.9398732,6.9569441]},
+  {t:"19:00", n:"Kerstmarkt Brühl (Marktplatz)", note:"Laatste Glühwein, dan naar het hotel.", ll:[50.8292,6.9048]}
+];
+
+const plan = document.getElementById("plan");
+const map = L.map("map",{scrollWheelZoom:false});
+L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
+  {maxZoom:19, subdomains:"abcd", attribution:"&copy; OpenStreetMap &copy; CARTO"}).addTo(map);
+
+const markers = STOPS.map((s,i)=>{
+  const icon = L.divIcon({className:"", html:`<div class="pin${s.train?" train":""}">${i+1}</div>`, iconSize:[28,28], iconAnchor:[14,14]});
+  const m = L.marker(s.ll,{icon}).addTo(map).bindPopup(`<b>${s.t} · ${s.n}</b><br>${s.note}<br><a target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=${s.ll.join(",")}">Route</a>`);
+  const li = document.createElement("li");
+  li.className = "stop"+(s.train?" train":"");
+  li.innerHTML = `<div class="num">${i+1}</div><div class="body"><div class="time">${s.t}</div><div class="title">${s.n}</div><div class="note">${s.note}</div></div>`;
+  li.onclick = ()=>{ map.setView(s.ll,16); m.openPopup(); document.getElementById("map").scrollIntoView({behavior:"smooth"}); };
+  plan.appendChild(li);
+  return m;
+});
+
+// Lopen in Brühl, trein Brühl↔Köln (gestippeld), lopen in Köln
+const walk = {color:"#7a1f2b", weight:4, opacity:.8};
+const train = {color:"#c9973f", weight:4, dashArray:"8 8"};
+L.polyline([STOPS[0].ll, STOPS[1].ll], walk).addTo(map);
+L.polyline([STOPS[1].ll, [50.9432141,6.9586017]], train).addTo(map);
+L.polyline(STOPS.slice(2,6).map(s=>s.ll), walk).addTo(map);
+L.polyline([[50.9432141,6.9586017], STOPS[1].ll], train).addTo(map);
+L.polyline([STOPS[1].ll, STOPS[6].ll, STOPS[0].ll], walk).addTo(map);
+
+map.fitBounds(L.featureGroup(markers).getBounds().pad(0.1));
+</script>
+</body>
+</html>
