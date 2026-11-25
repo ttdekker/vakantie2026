@@ -46,6 +46,14 @@
   a{color:var(--red)}
   footer{color:var(--muted);font-size:.8rem;text-align:center;padding:24px 16px 44px}
   footer .wish{font:600 1.05rem Fraunces,Georgia,serif;color:var(--deep);display:block;margin-bottom:8px}
+  .legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.82rem;color:var(--muted);margin:-14px 0 20px}
+  .mk{display:grid;gap:10px}
+  .mcard{display:flex;gap:12px;background:var(--card);border:1px solid var(--line);border-left:5px solid var(--c);border-radius:14px;padding:10px 14px;cursor:pointer}
+  .mcard .ico{background:var(--c);color:#fff}
+  .mcard .hrs{display:inline-block;background:#f6ece1;border-radius:999px;padding:1px 9px;font-size:.82rem;font-weight:600;margin:2px 0 4px}
+  .mcard .where{font-size:.82rem;color:var(--muted)}
+  .tag{display:inline-block;font-size:.72rem;font-weight:600;color:#fff;background:var(--c);border-radius:999px;padding:0 7px;margin-left:6px;vertical-align:2px}
+  .mpin{border-radius:50%;width:34px;height:34px;display:grid;place-items:center;font-size:18px;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.3)}
   .pin{background:#fff;border-radius:50%;width:34px;height:34px;display:grid;place-items:center;font-size:18px;border:2px solid var(--red);box-shadow:0 2px 6px rgba(0,0,0,.25)}
 </style>
 </head>
@@ -57,11 +65,16 @@
   <p>Glühwein, lichtjes en een Kölsch — en 's avonds nog even de kerstmarkt in Brühl.</p>
 </header>
 <main>
-  <div id="map" role="img" aria-label="Kaart met de plekken van de dag"></div>
+  <div id="map" role="img" aria-label="Kaart met de plekken van de dag en de kerstmarkten"></div>
+  <div class="legend"><span>⚪ wit rondje = onderweg</span><span>🎨 gekleurd = kerstmarkt</span><span>┅ gestippeld = trein</span></div>
 
   <h2>Wat we zouden kunnen doen</h2>
   <p class="sub">Allemaal ideeën, niks moet. Tik op een plek om hem op de kaart te zien.</p>
   <ol class="day" id="day"></ol>
+
+  <h2>De kerstmarkten</h2>
+  <p class="sub">Elke markt heeft z'n eigen kleur op de kaart. De tijden gelden voor donderdag.</p>
+  <div class="mk" id="markets"></div>
 
   <h2>Met de trein</h2>
   <div class="card"><ul>
@@ -77,7 +90,6 @@
     <li data-i="🕯️">Alle kerstmarkten in Keulen op een rij: <a target="_blank" rel="noopener" href="https://www.koeln.de/weihnachten/weihnachtsmaerkte-koeln">koeln.de</a>.</li>
     <li data-i="🍺">In het Brauhaus blijft de ober Kölsch brengen tot je je bierviltje op het glas legt.</li>
     <li data-i="💶">Wat contant geld is handig bij de kraampjes.</li>
-    <li data-i="⚓">Zin in meer? De <a target="_blank" rel="noopener" href="https://www.koeln.de/weihnachten/weihnachtsmaerkte-koeln/hafen-weihnachtsmarkt/">markt aan de haven</a> bij het chocolademuseum is een mooie wandeling langs de Rijn.</li>
   </ul></div>
 </main>
 <footer>
@@ -87,30 +99,77 @@
 
 <script src="../vendor/leaflet/leaflet.js"></script>
 <script>
+const K = "https://www.koeln.de/weihnachten/weihnachtsmaerkte-koeln/";
+const MARKETS = {
+  dom:   {i:"🎄", c:"#b23a3a", n:"Weihnachtsmarkt am Dom", where:"Roncalliplatz, naast de Dom", hrs:"11:00 – 22:00", ll:[50.9405848,6.9577967],
+          f:"Reuzenkerstboom van 25 meter met een lichtdak van 50.000 lampjes, podium met koren en tot 140 kraampjes.", url:K+"weihnachtsmarkt-am-koelner-dom/"},
+  heinz: {i:"⛸️", c:"#2f6f8f", n:"Heinzels Wintermärchen", where:"Alter Markt & Heumarkt, oude stad", hrs:"11:00 – 22:00", ll:[50.9370955,6.9602779],
+          f:"De grootste: kaboutersfeer, ijsbaan met bruggetje op de Heumarkt, ambachtsstraatjes en een kerstpostkantoor.", url:K+"weihnachtsmarkt-altstadt/"},
+  hafen: {i:"🎡", c:"#1f7a6d", n:"Hafen-Weihnachtsmarkt", where:"Bij het chocolademuseum, aan de Rijn", hrs:"11:00 – 21:00", ll:[50.9322,6.9641],
+          f:"Houten huisjes direct aan het water en een reuzenrad van 50 meter met uitzicht op de Dom.", url:K+"hafen-weihnachtsmarkt/"},
+  engel: {i:"👼", c:"#b07a1f", n:"Markt der Engel", where:"Neumarkt", hrs:"11:00 – 21:00", ll:[50.9360,6.9475],
+          f:"Honderden sterretjes in de bomen, witte huisjes en rondlopende engelen. Veel handgemaakte spullen.", url:K+"weihnachtsmarkt-neumarkt/"},
+  niko:  {i:"🎅", c:"#7a3b8f", n:"Nikolausdorf", where:"Rudolfplatz, bij de oude stadspoort", hrs:"11:00 – 21:00 (Glühwein tot 22:00)", ll:[50.93635,6.94043],
+          f:"Vakwerkhuisjes voor de middeleeuwse Hahnentorburg; Sinterklaas loopt rond tussen 16:30 en 17:30.", url:K+"weihnachtsmarkt-rudolfplatz/"},
+  park:  {i:"🌳", c:"#4f6b3a", n:"Weihnachtsmarkt im Stadtgarten", where:"Stadtgarten, Belgisch Kwartier", hrs:"16:00 – 21:30", ll:[50.9417,6.9352],
+          f:"Klein en hip onder de bomen: wisselende ontwerpers, wijnboeren-Glühwein en vegan eten.", url:K+"weihnachtsmarkt-stadtgarten/"},
+  bruehl:{i:"🌟", c:"#a0522d", n:"Brühler Weihnachtsmarkt", where:"Centrum Brühl, Marktplatz", hrs:"11:00 – 20:00", ll:[50.8292,6.9048], tag:"bij het hotel",
+          f:"Gezellig kerstdorpje met de grote kerstboom op de Marktplatz.", url:"https://wepag.de/bruehler-weihnachtsmarkt/"}
+};
+
 const STOPS = [
   {i:"🏨", w:"Rond het middaguur", n:"Auto bij het hotel", note:"Hotel am Stern, Uhlstraße. Daarna rustig naar het station wandelen.", ll:[50.8262,6.9065], url:"http://www.hotel-am-stern.de/", lbl:"Hotel am Stern"},
   {i:"🚆", w:"Als we er klaar voor zijn", n:"Trein vanuit Brühl", note:"Kaartje in de app, en hup naar Köln Hbf.", ll:[50.8287741,6.9129176], url:"https://www.vrs.de/en/tickets/ticket-assortment/24hourticket", lbl:"Over het 24-uursticket"},
   {i:"⛪", w:"Bij aankomst", n:"De Dom", note:"Pal naast het station. Rondkijken binnen gaat sinds kort met een kaartje (online of aan de kassa op de Roncalliplatz, tot 17:30). Even een kaarsje opsteken via de noordingang mag gratis.", ll:[50.9412784,6.9582814], url:"https://www.koelner-dom.de/", lbl:"Kölner Dom"},
-  {i:"🎄", w:"In de middag", n:"Kerstmarkt bij de Dom", note:"Eerste Glühwein en iets lekkers — op donderdag lekker rustig.", ll:[50.9405848,6.9577967], url:"https://www.koeln.de/weihnachten/weihnachtsmaerkte-koeln/weihnachtsmarkt-am-koelner-dom/", lbl:"Foto's en info"},
-  {i:"✨", w:"Als het gaat schemeren", n:"Heinzels Wintermärchen", note:"De knusse markt in de oude stad, met kabouters en lichtjes.", ll:[50.9370955,6.9602779], url:"https://www.koeln.de/weihnachten/weihnachtsmaerkte-koeln/weihnachtsmarkt-altstadt/", lbl:"Foto's en info"},
+  {m:"dom",   w:"In de middag", note:"Eerste Glühwein en iets lekkers — op donderdag lekker rustig."},
+  {m:"heinz", w:"Als het gaat schemeren", note:"De knusse markt in de oude stad, met kabouters en lichtjes."},
   {i:"🍺", w:"Wanneer we trek krijgen", n:"Brauhaus Früh am Dom", note:"Stevig eten en een Kölsch. Vlak bij het station voor de terugweg.", ll:[50.9398732,6.9569441], url:"https://www.frueh-am-dom.de/", lbl:"Menukaart en reserveren"},
-  {i:"🌟", w:"Op de terugweg", n:"Kerstmarkt in Brühl", note:"Gezellig kerstdorpje in het centrum, open tot 20:00 — lukt het niet meer, dan vrijdag.", ll:[50.8292,6.9048], url:"https://wepag.de/bruehler-weihnachtsmarkt/", lbl:"Info en plattegrond"}
-];
+  {m:"bruehl",w:"Op de terugweg", note:"Open tot 20:00 — lukt het niet meer, dan vrijdag."}
+].map(s=> s.m ? {...s, i:MARKETS[s.m].i, n:MARKETS[s.m].n, ll:MARKETS[s.m].ll, url:MARKETS[s.m].url, lbl:"Foto's en info"} : s);
 
 const map = L.map("map",{scrollWheelZoom:false});
 L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",
   {maxZoom:19, attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'}).addTo(map);
 
+const ext = (href,txt)=>`<a target="_blank" rel="noopener" href="${href}">${txt}</a>`;
+const route = ll => ext(`https://www.google.com/maps/dir/?api=1&destination=${ll.join(",")}`,"Route");
+const focus = (ll,mk)=>{ map.setView(ll,16); mk.openPopup(); document.getElementById("map").scrollIntoView({behavior:"smooth"}); };
+const notLink = e => !e.target.closest("a");
+
+// Kerstmarkten: gekleurde pins + kaartjes
+const mWrap = document.getElementById("markets");
+const mMarkers = {};
+for (const [id,m] of Object.entries(MARKETS)){
+  const icon = L.divIcon({className:"", html:`<div class="mpin" style="background:${m.c}">${m.i}</div>`, iconSize:[34,34], iconAnchor:[17,17]});
+  const mk = L.marker(m.ll,{icon, zIndexOffset:500}).addTo(map)
+    .bindTooltip(m.n,{direction:"top", offset:[0,-16]})
+    .bindPopup(`<b>${m.i} ${m.n}</b><br><i>Do ${m.hrs}</i><br>${m.f}<br>${ext(m.url,"Foto's en info")} · ${route(m.ll)}`);
+  mMarkers[id] = mk;
+  const d = document.createElement("div");
+  d.className = "mcard"; d.style.setProperty("--c", m.c);
+  d.innerHTML = `<div class="ico">${m.i}</div><div><div class="title">${m.n}${m.tag?`<span class="tag">${m.tag}</span>`:""}</div>
+    <div class="where">${m.where}</div><span class="hrs">🕯️ do ${m.hrs}</span><div class="note">${m.f}</div>
+    <a class="more" target="_blank" rel="noopener" href="${m.url}">Foto's en info →</a></div>`;
+  d.onclick = e=>{ if(notLink(e)) focus(m.ll, mk); };
+  mWrap.appendChild(d);
+}
+
+// Onze dag
 const day = document.getElementById("day");
-const markers = STOPS.map(s=>{
-  const icon = L.divIcon({className:"", html:`<div class="pin">${s.i}</div>`, iconSize:[34,34], iconAnchor:[17,17]});
-  const m = L.marker(s.ll,{icon}).addTo(map).bindPopup(`<b>${s.n}</b><br>${s.note}<br><a target="_blank" rel="noopener" href="${s.url}">${s.lbl}</a> · <a target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=${s.ll.join(",")}">Route</a>`);
+const all = Object.values(mMarkers);
+STOPS.forEach(s=>{
+  let mk;
+  if (s.m) mk = mMarkers[s.m];
+  else {
+    const icon = L.divIcon({className:"", html:`<div class="pin">${s.i}</div>`, iconSize:[34,34], iconAnchor:[17,17]});
+    mk = L.marker(s.ll,{icon}).addTo(map).bindPopup(`<b>${s.n}</b><br>${s.note}<br>${ext(s.url,s.lbl)} · ${route(s.ll)}`);
+    all.push(mk);
+  }
   const li = document.createElement("li");
   li.className = "stop";
   li.innerHTML = `<div class="ico">${s.i}</div><div class="body"><div class="when">${s.w}</div><div class="title">${s.n}</div><div class="note">${s.note}</div><a class="more" target="_blank" rel="noopener" href="${s.url}">${s.lbl} →</a></div>`;
-  li.onclick = (e)=>{ if(e.target.closest('a')) return; map.setView(s.ll,16); m.openPopup(); document.getElementById("map").scrollIntoView({behavior:"smooth"}); };
+  li.onclick = e=>{ if(notLink(e)) focus(s.ll, mk); };
   day.appendChild(li);
-  return m;
 });
 
 // Wandelen (rood) en trein (goud, gestippeld)
@@ -121,7 +180,18 @@ L.polyline([STOPS[0].ll, STOPS[1].ll], walk).addTo(map);
 L.polyline([STOPS[1].ll, hbf], train).addTo(map);
 L.polyline(STOPS.slice(2,6).map(s=>s.ll), walk).addTo(map);
 L.polyline([STOPS[1].ll, STOPS[6].ll, STOPS[0].ll], walk).addTo(map);
-map.fitBounds(L.featureGroup(markers).getBounds().pad(0.1));
+// Start ingezoomd op Keulen; knopjes om te wisselen
+const allB = L.featureGroup(all).getBounds().pad(0.1);
+const kolnB = L.latLngBounds(all.map(m=>m.getLatLng()).filter(ll=>ll.lat>50.9)).pad(0.12);
+map.fitBounds(kolnB);
+const Btn = L.Control.extend({options:{position:"topright"}, onAdd(){
+  const d = L.DomUtil.create("div","leaflet-bar");
+  d.innerHTML = '<a href="#" style="width:auto;padding:0 8px;font:600 12px Inter,sans-serif">Keulen</a><a href="#" style="width:auto;padding:0 8px;font:600 12px Inter,sans-serif">Hele dag</a>';
+  const [a,b] = d.querySelectorAll("a");
+  a.onclick = e=>{e.preventDefault(); map.fitBounds(kolnB);};
+  b.onclick = e=>{e.preventDefault(); map.fitBounds(allB);};
+  L.DomEvent.disableClickPropagation(d); return d; }});
+map.addControl(new Btn());
 
 // Een beetje sneeuw in de kop
 const snow = document.getElementById("snow");
